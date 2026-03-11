@@ -434,7 +434,7 @@ function DemingQuote() {
 function WasDuLernst() {
   /* 5 categories: BWL, Technologie, Analytik, VWL, Überfachlich */
   const catColors: Record<string, string> = {
-    b: ORANGE, t: '#333', a: '#6366f1', v: '#059669', u: '#94a3b8'
+    b: ORANGE, t: '#333333', a: '#6366f1', v: '#059669', u: '#94a3b8'
   }
   const catLabels: [string, string][] = [
     ['b', 'BWL'], ['t', 'Technologie'], ['a', 'Analytik'], ['v', 'VWL'], ['u', 'Überfachlich']
@@ -591,7 +591,7 @@ function WasDuLernst() {
 /* ─── FAHRPLAN — Animierte Scroll-Timeline ─── */
 function SemesterFahrplan() {
   /* Color-coded items: [label, category] — b=BWL, t=Tech, a=Analytik, v=VWL, u=Überfachlich, p=Praxis */
-  const catCol: Record<string, string> = { b: ORANGE, t: '#333', a: '#6366f1', v: '#059669', u: '#94a3b8', p: '#78716c' }
+  const catCol: Record<string, string> = { b: ORANGE, t: '#333333', a: '#6366f1', v: '#059669', u: '#94a3b8', p: '#78716c' }
   const semesters = [
     { nr: 1, title: 'Grundlagen', skill: 'Du verstehst die Sprache der Wirtschaft und Technik.', items: [['Allgemeine BWL','b'], ['Mathematik 1','a'], ['Mikroökonomik','v'], ['Wirtschaftsinformatik','t'], ['Projekt- & IT-Management','u'], ['Recht & Datenschutz','u']] as [string,string][] },
     { nr: 2, title: 'Methoden', skill: 'Du kannst Daten erheben, programmieren und statistisch auswerten.', items: [['Mathematik 2','a'], ['Grundlagen der Statistik','a'], ['Informatik & Programmieren','t'], ['Makroökonomik','v'], ['Marketing','b'], ['Wiss. Arbeiten & Ethik','u']] as [string,string][] },
