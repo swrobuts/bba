@@ -413,8 +413,8 @@ function DemingQuote() {
           <div className="flex flex-col sm:flex-row items-center gap-10 sm:gap-16">
             {/* Portrait — LinkedIn style: round, grayscale, subtle border */}
             <div className="flex-shrink-0">
-              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-neutral-200 flex items-center justify-center" style={{ background: '#e5e5e5' }}>
-                <span className="text-3xl sm:text-4xl font-bold text-neutral-400" style={SG}>WED</span>
+              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-neutral-200" style={{ background: '#e5e5e5' }}>
+                <img src={import.meta.env.BASE_URL + 'deming.jpg'} alt="W. Edwards Deming" className="w-full h-full object-cover" loading="lazy" />
               </div>
             </div>
             <div className="text-center sm:text-left">
