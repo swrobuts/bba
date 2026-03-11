@@ -76,7 +76,7 @@ export default function App() {
       >
         <Fallstudie />
         <DemingQuote />
-        <WasDuLernst />
+        {/* <WasDuLernst /> */}
         <SemesterFahrplan />
         <Berufswelt />
         <PasstDu />
@@ -835,7 +835,7 @@ function PasstDu() {
 function Vorteile() {
   const facts = [
     ['Klein', 'Persönliche Atmosphäre, keine Massenvorlesung'],
-    ['3 in 1', 'BWL + IT + Analytik'],
+    ['5 in 1', 'BWL + IT + Analytik + VWL + Mathe'],
     ['Sem. 5', 'Praxissemester im Unternehmen'],
     ['Top 10', 'Gefragteste Skills laut LinkedIn'],
     ['B.Sc.', 'Bachelor of Science'],
