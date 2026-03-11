@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import './App.css'
 
 /* ─── Intersection Observer Hook ─── */
 function useScrollReveal() {
@@ -9,7 +8,7 @@ function useScrollReveal() {
     if (!el) return
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); obs.unobserve(el) } },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.12, rootMargin: '0px 0px -30px 0px' }
     )
     obs.observe(el)
     return () => obs.disconnect()
@@ -22,8 +21,52 @@ function Reveal({ className = '', children, delay = '' }: { className?: string; 
   return <div ref={ref} className={`fade-up ${delay} ${className}`}>{children}</div>
 }
 
-/* ─── Navigation ─── */
-function Nav() {
+/* ═══════════════════════════════════════════════════════════════
+   APP ROOT — Die Weiche steuert den gesamten Flow
+   ═══════════════════════════════════════════════════════════════ */
+
+export default function App() {
+  const [gateOpen, setGateOpen] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  const openGate = useCallback(() => {
+    setGateOpen(true)
+    setTimeout(() => {
+      contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 400)
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-[#FAFAF8]" style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <Nav visible={gateOpen} />
+      <Hero />
+      <Weiche onChooseBBA={openGate} gateOpen={gateOpen} />
+
+      {/* ─── Der Rest erscheint erst nach der Weiche ─── */}
+      <div
+        ref={contentRef}
+        className={`transition-all duration-1000 ${gateOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16 pointer-events-none max-h-0 overflow-hidden'}`}
+        style={gateOpen ? {} : { maxHeight: 0 }}
+      >
+        <Fallstudie />
+        <DemingQuote />
+        <WasDuLernst />
+        <SemesterFahrplan />
+        <Berufswelt />
+        <Wuerzburg />
+        <CTA />
+        <Footer />
+      </div>
+    </div>
+  )
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION — Erscheint erst, wenn der Gate offen ist
+   ═══════════════════════════════════════════════════════════════ */
+
+function Nav({ visible }: { visible: boolean }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
@@ -34,33 +77,33 @@ function Nav() {
   const links = [
     { href: '#fallstudie', label: 'Fallstudie' },
     { href: '#studium', label: 'Studium' },
+    { href: '#fahrplan', label: 'Fahrplan' },
     { href: '#berufswelt', label: 'Berufswelt' },
-    { href: '#dav', label: 'Live: Python' },
     { href: '#wuerzburg', label: 'Würzburg' },
     { href: '#bewerben', label: 'Bewerben' },
   ]
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${!visible ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'} ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
+      <div className="max-w-7xl mx-auto px-8 lg:px-16 flex items-center justify-between h-20">
         <a href="#" className="flex items-center gap-3">
-          <span className="font-bold text-lg tracking-tight" style={{ fontFamily: 'Space Grotesk', color: '#E87722' }}>BBA</span>
-          <span className={`text-sm hidden sm:inline ${scrolled ? 'text-neutral-500' : 'text-neutral-400'}`}>THWS Würzburg</span>
+          <span className="font-bold text-xl tracking-tight" style={{ fontFamily: 'Space Grotesk', color: '#E87722' }}>BBA</span>
+          <span className={`text-base hidden sm:inline ${scrolled ? 'text-neutral-500' : 'text-neutral-400'}`}>THWS Würzburg</span>
         </a>
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-10">
           {links.map(l => (
-            <a key={l.href} href={l.href} className={`text-sm font-medium transition-colors hover:text-[#E87722] ${scrolled ? 'text-neutral-700' : 'text-neutral-600'}`}>{l.label}</a>
+            <a key={l.href} href={l.href} className={`text-base font-medium transition-colors hover:text-[#E87722] ${scrolled ? 'text-neutral-700' : 'text-neutral-600'}`}>{l.label}</a>
           ))}
         </div>
         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2" aria-label="Menü">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {menuOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></>}
           </svg>
         </button>
       </div>
       {menuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-md border-t px-6 py-4 space-y-3">
+        <div className="md:hidden bg-white/95 backdrop-blur-md border-t px-8 py-5 space-y-4">
           {links.map(l => (
-            <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-neutral-700 hover:text-[#E87722]">{l.label}</a>
+            <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} className="block text-lg font-medium text-neutral-700 hover:text-[#E87722]">{l.label}</a>
           ))}
         </div>
       )}
@@ -68,51 +111,55 @@ function Nav() {
   )
 }
 
-/* ─── Hero Section ─── */
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO — Kurzer Einstieg ins Thema „Entscheidungen"
+   ═══════════════════════════════════════════════════════════════ */
+
 function Hero() {
   const [phase, setPhase] = useState(0)
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 800)
-    const t2 = setTimeout(() => setPhase(2), 2200)
+    const t1 = setTimeout(() => setPhase(1), 600)
+    const t2 = setTimeout(() => setPhase(2), 1800)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
   return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden bg-[#FAFAF8]">
-      <div className="absolute top-24 right-16 w-px h-48 bg-[#E87722]/15" />
-      <div className="absolute bottom-32 left-12 w-32 h-px bg-[#E87722]/15" />
+    <section className="min-h-[70vh] flex flex-col justify-center relative overflow-hidden bg-[#FAFAF8]">
+      <div className="absolute top-24 right-16 w-px h-64 bg-[#E87722]/15" />
+      <div className="absolute bottom-32 left-12 w-48 h-px bg-[#E87722]/15" />
 
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 pt-24 pb-12">
-        <div className="max-w-3xl">
-          <p className={`text-sm font-medium tracking-widest uppercase mb-8 transition-all duration-700 ${phase >= 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ color: '#E87722' }}>
-            Bachelor Business Analytics · THWS Würzburg
-          </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-[4.2rem] font-bold leading-[1.08] tracking-tight mb-10" style={{ fontFamily: 'Space Grotesk' }}>
-            <span className={`block transition-all duration-700 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#1A1A2E' }}>
-              Jeden Tag treffen
-            </span>
-            <span className={`block transition-all duration-700 delay-200 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#1A1A2E' }}>
-              Unternehmen tausende
-            </span>
-            <span className={`block transition-all duration-700 delay-200 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#1A1A2E' }}>
-              Entscheidungen.
-            </span>
-            <span className={`block mt-4 transition-all duration-700 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#E87722' }}>
-              Wer dabei Daten versteht,
-            </span>
-            <span className={`block transition-all duration-700 delay-200 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#E87722' }}>
-              macht den Unterschied.
-            </span>
-          </h1>
-          <p className={`text-lg text-neutral-500 max-w-xl leading-relaxed transition-all duration-700 delay-500 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            Business Analytics verbindet Wirtschaftswissen mit Technologie und Datenanalyse — ein Studium für alle, die verstehen wollen, wie aus Zahlen gute Entscheidungen werden.
-          </p>
-          <div className={`flex flex-wrap gap-4 mt-10 transition-all duration-700 delay-700 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <a href="#fallstudie" className="bg-[#1A1A2E] text-white px-7 py-3.5 text-sm font-semibold tracking-wide hover:bg-[#2a2a4e] transition-colors">
-              Wie das aussieht
-            </a>
-            <a href="#bewerben" className="border-2 border-[#E87722] text-[#E87722] px-7 py-3.5 text-sm font-semibold tracking-wide hover:bg-[#E87722] hover:text-white transition-colors">
-              Direkt bewerben
-            </a>
+      <div className="max-w-7xl mx-auto px-8 lg:px-16 pt-20 pb-8">
+        <div className="flex items-start justify-between gap-12">
+          <div className="max-w-4xl">
+            <p className={`text-base font-medium tracking-widest uppercase mb-10 transition-all duration-700 ${phase >= 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ color: '#E87722' }}>
+              Bachelor Business Analytics · THWS Würzburg
+            </p>
+            <h1 className="text-5xl sm:text-6xl lg:text-[5.5rem] font-bold leading-[1.06] tracking-tight mb-10" style={{ fontFamily: 'Space Grotesk' }}>
+              <span className={`block transition-all duration-700 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#1A1A2E' }}>
+                Jeden Tag treffen
+              </span>
+              <span className={`block transition-all duration-700 delay-150 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#1A1A2E' }}>
+                Unternehmen tausende
+              </span>
+              <span className={`block transition-all duration-700 delay-300 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ color: '#E87722' }}>
+                Entscheidungen.
+              </span>
+            </h1>
+            <p className={`text-xl lg:text-2xl text-neutral-500 max-w-2xl leading-relaxed transition-all duration-700 delay-300 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              Die Frage ist: Wie?
+            </p>
+          </div>
+
+          {/* QR-Code für Smartphone */}
+          <div className={`hidden lg:flex flex-col items-center gap-3 pt-16 transition-all duration-700 delay-500 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent('https://swrobuts.github.io/bba/')}&color=1A1A2E&bgcolor=FAFAF8`}
+              alt="QR-Code zur Website"
+              width={160}
+              height={160}
+              className="border border-neutral-200 p-2 bg-white"
+            />
+            <p className="text-sm text-neutral-400 text-center">Am Handy mitlesen</p>
           </div>
         </div>
       </div>
@@ -120,81 +167,223 @@ function Hero() {
   )
 }
 
-/* ─── Fallstudie: Mission Erfrischung ─── */
+
+/* ═══════════════════════════════════════════════════════════════
+   DIE WEICHE — Das Herzstück
+   4 Ansätze, nur einer führt weiter
+   ═══════════════════════════════════════════════════════════════ */
+
+interface WeicheProps {
+  onChooseBBA: () => void
+  gateOpen: boolean
+}
+
+function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
+  const [clicked, setClicked] = useState<Record<string, boolean>>({})
+  const [shaking, setShaking] = useState<string | null>(null)
+  const [bbaChosen, setBbaChosen] = useState(false)
+
+  const wrongOptions = [
+    {
+      id: 'bauch',
+      title: 'Bauchgefühl',
+      desc: 'Erfahrung und Intuition reichen.',
+      fail: 'In 60% der Fälle daneben. Besonders bei komplexen Entscheidungen ist Intuition systematisch verzerrt — das zeigt die Forschung seit Kahneman & Tversky.',
+    },
+    {
+      id: 'raten',
+      title: 'Einfach raten',
+      desc: 'Wird schon irgendwie passen.',
+      fail: 'Zufallstreffer sind kein Geschäftsmodell. Unternehmen, die raten, verschwinden. 70% aller Startups scheitern — oft an falschen Annahmen.',
+    },
+    {
+      id: 'chef',
+      title: 'Der Chef entscheidet',
+      desc: 'Wer am längsten da ist, weiß es am besten.',
+      fail: 'Hierarchie ersetzt keine Analyse. Die Erfahrung von gestern kann in dynamischen Märkten morgen wertlos sein.',
+    },
+  ]
+
+  const handleWrong = (id: string) => {
+    if (bbaChosen || clicked[id]) return
+    setShaking(id)
+    setClicked(prev => ({ ...prev, [id]: true }))
+    setTimeout(() => setShaking(null), 600)
+  }
+
+  const handleBBA = () => {
+    if (bbaChosen) return
+    setBbaChosen(true)
+    setTimeout(() => onChooseBBA(), 800)
+  }
+
+  const allWrongClicked = wrongOptions.every(o => clicked[o.id])
+
+  return (
+    <section className={`py-20 lg:py-28 transition-all duration-700 ${gateOpen ? 'bg-[#FAFAF8]' : 'bg-[#FAFAF8]'}`}>
+      <div className="max-w-6xl mx-auto px-8 lg:px-16">
+        <Reveal>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-5 text-center" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+            Wie würdest du entscheiden?
+          </h2>
+          <p className="text-lg lg:text-xl text-neutral-500 text-center max-w-2xl mx-auto mb-16 leading-relaxed">
+            Ein Getränkehersteller will einen neuen Eistee launchen. Millionen-Budget. Vier Ansätze liegen auf dem Tisch.
+          </p>
+        </Reveal>
+
+        <div className="grid sm:grid-cols-2 gap-5 lg:gap-6 max-w-4xl mx-auto">
+          {/* Falsche Optionen */}
+          {wrongOptions.map((opt, i) => (
+            <Reveal key={opt.id} delay={`stagger-${i + 1}`}>
+              <button
+                onClick={() => handleWrong(opt.id)}
+                disabled={bbaChosen}
+                className={`w-full text-left p-8 lg:p-10 border-2 transition-all duration-500 group relative overflow-hidden
+                  ${clicked[opt.id]
+                    ? 'border-red-300/50 bg-red-50/50'
+                    : 'border-neutral-200 bg-white hover:border-neutral-400 hover:shadow-md'
+                  }
+                  ${shaking === opt.id ? 'animate-shake' : ''}
+                  ${bbaChosen ? 'opacity-40' : ''}
+                `}
+              >
+                <p className={`text-xl lg:text-2xl font-bold mb-2 transition-colors ${clicked[opt.id] ? 'text-red-400' : 'text-neutral-800'}`} style={{ fontFamily: 'Space Grotesk' }}>
+                  {opt.title}
+                </p>
+                {!clicked[opt.id] ? (
+                  <p className="text-base lg:text-lg text-neutral-500 leading-relaxed">{opt.desc}</p>
+                ) : (
+                  <p className="text-base lg:text-lg text-red-400/80 leading-relaxed">{opt.fail}</p>
+                )}
+              </button>
+            </Reveal>
+          ))}
+
+          {/* BBA — die richtige Wahl */}
+          <Reveal delay="stagger-4">
+            <button
+              onClick={handleBBA}
+              disabled={bbaChosen}
+              className={`w-full text-left p-8 lg:p-10 border-2 transition-all duration-500 relative overflow-hidden
+                ${bbaChosen
+                  ? 'border-[#E87722] bg-[#E87722]/5 shadow-lg shadow-[#E87722]/10'
+                  : 'border-neutral-200 bg-white hover:border-[#E87722] hover:shadow-lg hover:shadow-[#E87722]/10'
+                }
+              `}
+            >
+              <p className={`text-xl lg:text-2xl font-bold mb-2 transition-colors ${bbaChosen ? 'text-[#E87722]' : 'text-neutral-800'}`} style={{ fontFamily: 'Space Grotesk' }}>
+                Business Analytics
+              </p>
+              {!bbaChosen ? (
+                <p className="text-base lg:text-lg text-neutral-500 leading-relaxed">Daten sammeln, analysieren, verstehen — und dann entscheiden.</p>
+              ) : (
+                <div>
+                  <p className="text-base lg:text-lg text-[#E87722] leading-relaxed font-medium mb-3">
+                    Genau. Nicht raten, sondern wissen.
+                  </p>
+                  <p className="text-base text-neutral-500 leading-relaxed">
+                    Scroll weiter und sieh, wie das in der Praxis aussieht.
+                  </p>
+                </div>
+              )}
+
+              {/* Pulsing indicator when all wrong are clicked */}
+              {allWrongClicked && !bbaChosen && (
+                <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-[#E87722] animate-pulse" />
+              )}
+            </button>
+          </Reveal>
+        </div>
+
+        {/* Hinweis wenn alles falsch angeklickt */}
+        {allWrongClicked && !bbaChosen && (
+          <Reveal>
+            <p className="text-center mt-10 text-lg text-neutral-400">
+              Nur noch eine Option übrig.
+            </p>
+          </Reveal>
+        )}
+      </div>
+    </section>
+  )
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FALLSTUDIE — Eistee Beispiel, jetzt als Vertiefung
+   ═══════════════════════════════════════════════════════════════ */
+
 function Fallstudie() {
   const [showData, setShowData] = useState(false)
   return (
-    <section id="fallstudie" className="py-24 lg:py-32" style={{ background: '#1A1A2E' }}>
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="fallstudie" className="py-28 lg:py-36" style={{ background: '#1A1A2E' }}>
+      <div className="max-w-7xl mx-auto px-8 lg:px-16">
         <Reveal>
-          <p className="text-sm font-medium tracking-widest uppercase mb-4" style={{ color: '#E87722' }}>Ein Beispiel</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-white" style={{ fontFamily: 'Space Grotesk' }}>
-            Zwei Teams. Ein Produkt. Zwei Ergebnisse.
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Zurück zum Eistee</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8 text-white" style={{ fontFamily: 'Space Grotesk' }}>
+            So funktioniert der<br />Unterschied in der Praxis.
           </h2>
-          <p className="text-lg text-neutral-400 max-w-3xl mb-4">
-            Ein Getränkehersteller will einen neuen Eistee in 200 Supermärkte bringen. Millionen-Budget. Zwei Teams bekommen den Auftrag — eines entscheidet aus dem Bauch, das andere nutzt Daten.
-          </p>
-          <p className="text-neutral-500 max-w-3xl mb-12">
-            Was du gleich siehst, passiert so jeden Tag in deutschen Unternehmen. Der Unterschied zwischen Erfolg und Misserfolg ist oft nicht Talent oder Erfahrung — sondern die Fähigkeit, Daten richtig zu lesen.
+          <p className="text-xl text-neutral-400 max-w-3xl mb-14 leading-relaxed">
+            Zwei Teams, gleiches Produkt, gleiches Budget. Eines verlässt sich auf Intuition. Das andere auf Daten.
           </p>
         </Reveal>
 
         <Reveal>
-          <div className="flex gap-px mb-12">
-            <button onClick={() => setShowData(false)} className={`px-6 py-3 text-sm font-semibold transition-all ${!showData ? 'bg-[#E87722] text-white' : 'bg-white/5 text-neutral-500 hover:text-white'}`}>
-              Team A: Bauchgefühl
+          <div className="flex gap-px mb-14">
+            <button onClick={() => setShowData(false)} className={`px-8 py-4 text-base font-semibold transition-all ${!showData ? 'bg-[#E87722] text-white' : 'bg-white/5 text-neutral-500 hover:text-white'}`}>
+              Team Bauchgefühl
             </button>
-            <button onClick={() => setShowData(true)} className={`px-6 py-3 text-sm font-semibold transition-all ${showData ? 'bg-[#E87722] text-white' : 'bg-white/5 text-neutral-500 hover:text-white'}`}>
-              Team B: Business Analytics
+            <button onClick={() => setShowData(true)} className={`px-8 py-4 text-base font-semibold transition-all ${showData ? 'bg-[#E87722] text-white' : 'bg-white/5 text-neutral-500 hover:text-white'}`}>
+              Team Analytics
             </button>
           </div>
         </Reveal>
 
         <div className="grid lg:grid-cols-2 gap-px bg-white/5">
           <Reveal>
-            <div className={`p-8 lg:p-10 transition-all duration-500 ${!showData ? 'bg-[#1e1028]' : 'bg-[#0f1e1a]'}`}>
-              <p className={`text-xs font-bold uppercase tracking-widest mb-6 ${!showData ? 'text-red-400/70' : 'text-emerald-400/70'}`}>
-                {!showData ? 'Vorgehen Team A' : 'Vorgehen Team B'}
+            <div className={`p-10 lg:p-12 transition-all duration-500 ${!showData ? 'bg-[#1e1028]' : 'bg-[#0f1e1a]'}`}>
+              <p className={`text-sm font-bold uppercase tracking-widest mb-8 ${!showData ? 'text-red-400/70' : 'text-emerald-400/70'}`}>
+                {!showData ? 'Vorgehen' : 'Vorgehen'}
               </p>
               {!showData ? (
-                <div className="space-y-5 text-sm leading-relaxed">
-                  <div><p className="text-white font-medium mb-1">Zielgruppe</p><p className="text-neutral-400">„Alle, die Eistee mögen." Keine Segmentierung, keine Daten über Kaufverhalten.</p></div>
-                  <div><p className="text-white font-medium mb-1">Platzierung</p><p className="text-neutral-400">Gleichmäßig auf alle 200 Märkte verteilt. Die Chefin kennt jemanden bei Edeka.</p></div>
-                  <div><p className="text-white font-medium mb-1">Timing</p><p className="text-neutral-400">Launch im Januar, weil das Produkt fertig ist. Saisonalität? Nicht berücksichtigt.</p></div>
-                  <div><p className="text-white font-medium mb-1">Preis</p><p className="text-neutral-400">2,49 € — „ungefähr wie die Konkurrenz." Preissensitivität der Zielgruppe? Unbekannt.</p></div>
+                <div className="space-y-7 text-base leading-relaxed">
+                  <div><p className="text-white font-semibold text-lg mb-1">Zielgruppe</p><p className="text-neutral-400">„Alle, die Eistee mögen." Keine Segmentierung.</p></div>
+                  <div><p className="text-white font-semibold text-lg mb-1">Platzierung</p><p className="text-neutral-400">Gleichmäßig auf alle 200 Märkte. Kontakte statt Kriterien.</p></div>
+                  <div><p className="text-white font-semibold text-lg mb-1">Timing</p><p className="text-neutral-400">Launch im Januar — das Produkt ist halt fertig.</p></div>
+                  <div><p className="text-white font-semibold text-lg mb-1">Preis</p><p className="text-neutral-400">2,49 € — „ungefähr wie die Konkurrenz."</p></div>
                 </div>
               ) : (
-                <div className="space-y-5 text-sm leading-relaxed">
-                  <div><p className="text-white font-medium mb-1">Kundensegmentierung</p><p className="text-neutral-400">Clusteranalyse der Kaufdaten zeigt: 18–35, urban, gesundheitsbewusst hat 3× höhere Kaufwahrscheinlichkeit.</p></div>
-                  <div><p className="text-white font-medium mb-1">Standortoptimierung</p><p className="text-neutral-400">Geo-Daten + Abverkaufshistorie identifizieren die 60 Märkte mit dem höchsten Umsatzpotenzial.</p></div>
-                  <div><p className="text-white font-medium mb-1">Timing</p><p className="text-neutral-400">Saisonale Nachfragekurve zeigt: Eistee-Peak im Mai/Juni. Launch auf den Tag genau geplant.</p></div>
-                  <div><p className="text-white font-medium mb-1">Pricing</p><p className="text-neutral-400">Conjoint-Analyse ergibt: Zielgruppe zahlt bis 2,89 € für Bio-Qualität. Premium-Strategie mit +15% Marge.</p></div>
+                <div className="space-y-7 text-base leading-relaxed">
+                  <div><p className="text-white font-semibold text-lg mb-1">Kundensegmentierung</p><p className="text-neutral-400">Clusteranalyse: 18–35, urban, gesundheitsbewusst — 3× höhere Kaufwahrscheinlichkeit.</p></div>
+                  <div><p className="text-white font-semibold text-lg mb-1">Standortoptimierung</p><p className="text-neutral-400">Geo-Daten + Abverkaufshistorie zeigen die 60 besten Märkte.</p></div>
+                  <div><p className="text-white font-semibold text-lg mb-1">Timing</p><p className="text-neutral-400">Saisonale Nachfragekurve: Eistee-Peak im Mai/Juni.</p></div>
+                  <div><p className="text-white font-semibold text-lg mb-1">Pricing</p><p className="text-neutral-400">Conjoint-Analyse: Zielgruppe zahlt bis 2,89 € für Bio.</p></div>
                 </div>
               )}
             </div>
           </Reveal>
 
           <Reveal delay="stagger-2">
-            <div className={`p-8 lg:p-10 transition-all duration-500 ${!showData ? 'bg-[#1e1028]' : 'bg-[#0f1e1a]'}`}>
-              <p className="text-xs font-bold uppercase tracking-widest mb-6 text-neutral-500">Ergebnis nach 6 Monaten</p>
+            <div className={`p-10 lg:p-12 transition-all duration-500 ${!showData ? 'bg-[#1e1028]' : 'bg-[#0f1e1a]'}`}>
+              <p className="text-sm font-bold uppercase tracking-widest mb-8 text-neutral-500">Ergebnis nach 6 Monaten</p>
               {!showData ? (
                 <div>
-                  <div className="text-6xl lg:text-7xl font-bold text-red-400/80 mb-4" style={{ fontFamily: 'Space Grotesk' }}>40%</div>
-                  <p className="text-neutral-400 mb-6">der Ware bleibt im Regal. Das Produkt wird eingestellt.</p>
-                  <div className="space-y-3 text-sm text-neutral-500">
-                    <p>Im Winter will niemand Eistee. Die Supermärkte räumen das Produkt aus.</p>
-                    <p>Das Budget ist verbrannt. Drei Leute verlieren ihren Job.</p>
-                    <p>Und das Schlimmste: Das Produkt war gut. Nur die Entscheidungen waren schlecht.</p>
+                  <div className="text-7xl lg:text-8xl font-bold text-red-400/80 mb-5" style={{ fontFamily: 'Space Grotesk' }}>40%</div>
+                  <p className="text-xl text-neutral-400 mb-8">der Ware bleibt im Regal.</p>
+                  <div className="space-y-3 text-base text-neutral-500 leading-relaxed">
+                    <p>Im Winter will niemand Eistee.</p>
+                    <p>Budget verbrannt. Produkt eingestellt.</p>
+                    <p>Das Produkt war gut. Die Entscheidungen nicht.</p>
                   </div>
                 </div>
               ) : (
                 <div>
-                  <div className="text-6xl lg:text-7xl font-bold text-emerald-400/80 mb-4" style={{ fontFamily: 'Space Grotesk' }}>92%</div>
-                  <p className="text-neutral-400 mb-6">Abverkaufsquote. Nachbestellungen ab Woche 3. Nationale Expansion geplant.</p>
-                  <div className="space-y-3 text-sm text-neutral-500">
-                    <p>Die Daten haben nicht geraten — sie haben gezeigt, was funktioniert.</p>
-                    <p>Real-time Dashboard ermöglicht Nachsteuerung bei einzelnen Standorten.</p>
-                    <p>Team B hat keine anderen Produkte, keine andere Erfahrung. Nur bessere Methoden.</p>
+                  <div className="text-7xl lg:text-8xl font-bold text-emerald-400/80 mb-5" style={{ fontFamily: 'Space Grotesk' }}>92%</div>
+                  <p className="text-xl text-neutral-400 mb-8">Abverkauf. Nachbestellungen ab Woche 3.</p>
+                  <div className="space-y-3 text-base text-neutral-500 leading-relaxed">
+                    <p>Daten haben gezeigt, was funktioniert.</p>
+                    <p>Real-time Dashboard ermöglicht Nachsteuerung.</p>
+                    <p>Gleiche Leute. Bessere Methoden.</p>
                   </div>
                 </div>
               )}
@@ -204,21 +393,21 @@ function Fallstudie() {
 
         {showData && (
           <Reveal>
-            <div className="mt-px p-8 lg:p-10 bg-[#E87722]/5 border-l-2 border-[#E87722]">
-              <p className="text-sm text-white mb-3" style={{ fontFamily: 'Space Grotesk' }}>
-                <strong>Genau das lernst du im BBA-Studium.</strong> Jeder einzelne Schritt von Team B basiert auf Methoden, die du in deinem Studium lernst:
+            <div className="mt-px p-10 lg:p-12 bg-[#E87722]/5" style={{ borderLeft: '3px solid #E87722' }}>
+              <p className="text-lg text-white mb-6" style={{ fontFamily: 'Space Grotesk' }}>
+                <strong>Jeder Schritt von Team Analytics basiert auf Methoden aus dem BBA-Studium:</strong>
               </p>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm mt-5">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-base">
                 {[
-                  { skill: 'Clusteranalyse', modul: 'Statistik & Data Science', sem: 'Sem. 3–4' },
-                  { skill: 'Geo-Datenanalyse', modul: 'Business Intelligence', sem: 'Sem. 3' },
-                  { skill: 'Zeitreihenanalyse', modul: 'Ökonometrie', sem: 'Sem. 4' },
-                  { skill: 'Conjoint-Analyse', modul: 'Marktforschung', sem: 'Sem. 4' },
+                  { skill: 'Clusteranalyse', modul: 'Statistik & Data Science', sem: 'Semester 3–4' },
+                  { skill: 'Geo-Datenanalyse', modul: 'Business Intelligence', sem: 'Semester 3' },
+                  { skill: 'Zeitreihenanalyse', modul: 'Ökonometrie', sem: 'Semester 4' },
+                  { skill: 'Conjoint-Analyse', modul: 'Marktforschung', sem: 'Semester 4' },
                 ].map((m, i) => (
                   <div key={i}>
-                    <p className="text-[#E87722] font-semibold">{m.skill}</p>
+                    <p className="text-[#E87722] font-semibold text-lg">{m.skill}</p>
                     <p className="text-neutral-400 mt-1">{m.modul}</p>
-                    <p className="text-neutral-600 text-xs mt-0.5">{m.sem}</p>
+                    <p className="text-neutral-600 text-sm mt-0.5">{m.sem}</p>
                   </div>
                 ))}
               </div>
@@ -230,703 +419,620 @@ function Fallstudie() {
   )
 }
 
-/* ─── Was du lernst ─── */
-function WasDuLernst() {
+
+/* ─── Deming Quote ─── */
+function DemingQuote() {
   return (
-    <section id="studium" className="py-24 lg:py-32 bg-white">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section className="py-24 lg:py-32 bg-[#FAFAF8]">
+      <div className="max-w-5xl mx-auto px-8 lg:px-16 text-center">
         <Reveal>
-          <p className="text-sm font-medium tracking-widest uppercase mb-4" style={{ color: '#E87722' }}>Das Studium</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
-            Drei Disziplinen. Eine Denkweise.
+          <blockquote>
+            <p className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-snug tracking-tight mb-8" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+              &ldquo;In God we trust; all others must bring data.&rdquo;
+            </p>
+            <footer className="text-lg text-neutral-400">
+              <span className="text-neutral-600 font-medium">W. Edwards Deming</span> — Begründer des modernen Qualitätsmanagements
+            </footer>
+          </blockquote>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   WAS DU LERNST — Modul-Netzwerk (Canvas Animation)
+   ═══════════════════════════════════════════════════════════════ */
+
+function WasDuLernst() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+  const animRef = useRef(0)
+
+  const modules = [
+    { id: 'bwl', label: 'BWL', x: 0.12, y: 0.22, cat: 'w' },
+    { id: 'mktg', label: 'Marketing', x: 0.08, y: 0.45, cat: 'w' },
+    { id: 'ctrl', label: 'Controlling', x: 0.15, y: 0.68, cat: 'w' },
+    { id: 'mafo', label: 'Marktforschung', x: 0.22, y: 0.88, cat: 'w' },
+    { id: 'dioek', label: 'Dig. Ökonomie', x: 0.06, y: 0.78, cat: 'w' },
+    { id: 'stat', label: 'Statistik', x: 0.45, y: 0.15, cat: 't' },
+    { id: 'prog', label: 'Programmieren', x: 0.55, y: 0.35, cat: 't' },
+    { id: 'bint', label: 'Business Intelligence', x: 0.42, y: 0.55, cat: 't' },
+    { id: 'oeko', label: 'Ökonometrie', x: 0.58, y: 0.72, cat: 't' },
+    { id: 'dav', label: 'DAV (Python)', x: 0.50, y: 0.90, cat: 't' },
+    { id: 'ds', label: 'Data Science', x: 0.65, y: 0.52, cat: 't' },
+    { id: 'db', label: 'Datenbanken', x: 0.70, y: 0.30, cat: 't' },
+    { id: 'recht', label: 'Recht', x: 0.88, y: 0.25, cat: 'u' },
+    { id: 'pm', label: 'Projektmgmt.', x: 0.92, y: 0.50, cat: 'u' },
+    { id: 'ethik', label: 'Ethik', x: 0.85, y: 0.72, cat: 'u' },
+    { id: 'wiss', label: 'Wiss. Arbeiten', x: 0.80, y: 0.88, cat: 'u' },
+  ]
+
+  const edges: [string, string][] = [
+    ['bwl', 'stat'], ['bwl', 'prog'],
+    ['mktg', 'mafo'], ['mktg', 'bint'], ['mktg', 'stat'],
+    ['ctrl', 'bint'], ['ctrl', 'oeko'],
+    ['mafo', 'stat'], ['mafo', 'oeko'], ['mafo', 'dav'],
+    ['stat', 'prog'], ['stat', 'oeko'], ['stat', 'ds'],
+    ['prog', 'dav'], ['prog', 'db'], ['prog', 'ds'],
+    ['bint', 'db'], ['bint', 'ds'], ['bint', 'dav'],
+    ['oeko', 'ds'], ['oeko', 'dav'],
+    ['dav', 'ds'],
+    ['recht', 'ethik'], ['recht', 'dioek'],
+    ['pm', 'bint'], ['pm', 'ctrl'],
+    ['ethik', 'ds'], ['ethik', 'dioek'],
+    ['wiss', 'stat'], ['wiss', 'oeko'],
+    ['dioek', 'mktg'], ['dioek', 'bint'],
+  ]
+
+  const catColors: Record<string, string> = { w: '#E87722', t: '#2563eb', u: '#059669' }
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setIsVisible(true) },
+      { threshold: 0.2 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!isVisible || !canvasRef.current) return
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let progress = 0
+    const totalFrames = 120
+
+    const draw = () => {
+      const rect = canvas.getBoundingClientRect()
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
+      ctx.scale(dpr, dpr)
+      const W = rect.width
+      const H = rect.height
+
+      ctx.clearRect(0, 0, W, H)
+
+      const p = Math.min(progress / totalFrames, 1)
+      const ease = 1 - Math.pow(1 - p, 3)
+
+      const edgeProgress = Math.min(p * 1.5, 1)
+      edges.forEach(([fromId, toId], idx) => {
+        const from = modules.find(m => m.id === fromId)!
+        const to = modules.find(m => m.id === toId)!
+        const ep = Math.max(0, Math.min((edgeProgress - idx * 0.02) * 2, 1))
+        if (ep <= 0) return
+
+        const fx = from.x * W, fy = from.y * H
+        const tx = to.x * W, ty = to.y * H
+
+        const crossDisc = from.cat !== to.cat
+        ctx.strokeStyle = crossDisc
+          ? `rgba(232, 119, 34, ${0.25 * ep})`
+          : `rgba(160, 160, 160, ${0.12 * ep})`
+        ctx.lineWidth = crossDisc ? 2 : 1
+        ctx.beginPath()
+        ctx.moveTo(fx, fy)
+        ctx.lineTo(fx + (tx - fx) * ep, fy + (ty - fy) * ep)
+        ctx.stroke()
+      })
+
+      modules.forEach((mod, idx) => {
+        const delay = idx * 0.03
+        const np = Math.max(0, Math.min((ease - delay) * 1.5, 1))
+        if (np <= 0) return
+
+        const x = mod.x * W
+        const y = mod.y * H
+        const radius = Math.max(6, W * 0.012) * np
+        const color = catColors[mod.cat]
+
+        ctx.beginPath()
+        ctx.arc(x, y, radius * 2.5, 0, Math.PI * 2)
+        const rgbaGlow = mod.cat === 'w' ? `rgba(232,119,34,${0.08 * np})`
+          : mod.cat === 't' ? `rgba(37,99,235,${0.08 * np})`
+          : `rgba(5,150,105,${0.08 * np})`
+        ctx.fillStyle = rgbaGlow
+        ctx.fill()
+
+        ctx.beginPath()
+        ctx.arc(x, y, radius, 0, Math.PI * 2)
+        ctx.fillStyle = color
+        ctx.globalAlpha = np
+        ctx.fill()
+        ctx.globalAlpha = 1
+
+        const fontSize = Math.max(13, W * 0.016)
+        ctx.font = `600 ${fontSize}px 'Space Grotesk', system-ui, sans-serif`
+        ctx.fillStyle = `rgba(26, 26, 46, ${np * 0.85})`
+        ctx.textAlign = 'center'
+        ctx.fillText(mod.label, x, y - radius - 8)
+      })
+
+      if (progress < totalFrames + 20) {
+        progress++
+        animRef.current = requestAnimationFrame(draw)
+      }
+    }
+
+    progress = 0
+    draw()
+    return () => cancelAnimationFrame(animRef.current)
+  }, [isVisible])
+
+  return (
+    <section id="studium" className="py-28 lg:py-36 bg-white">
+      <div className="max-w-7xl mx-auto px-8 lg:px-16">
+        <Reveal>
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Das Studium</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+            Drei Welten. Ein Studium.
           </h2>
-          <p className="text-lg text-neutral-500 max-w-3xl mb-6">
-            Business Analytics ist kein klassisches BWL-Studium und kein reines Informatik-Studium. Es verbindet drei Welten, weil die spannendsten Probleme genau an diesen Schnittstellen liegen.
-          </p>
-          <p className="text-neutral-500 max-w-3xl mb-16">
-            Du lernst nicht nur Theorie — du arbeitest ab dem ersten Semester mit echten Datensätzen, echten Tools und echten Fragestellungen. Nach sieben Semestern kannst du in einem Meeting mit dem Marketing genauso sicher diskutieren wie in einem Sprint mit dem Data-Engineering-Team.
+          <p className="text-xl text-neutral-500 max-w-3xl mb-10 leading-relaxed">
+            Business Analytics verbindet Wirtschaftswissen, Technologie und methodische Kompetenz. Die Stärke liegt im Zusammenspiel — jedes Modul baut auf anderen auf.
           </p>
         </Reveal>
 
-        <div className="grid lg:grid-cols-3 gap-px bg-neutral-100">
-          {[
-            {
-              letter: 'W',
-              title: 'Wirtschaft verstehen',
-              color: '#E87722',
-              desc: 'Du verstehst, wie Unternehmen funktionieren — von der Bilanz bis zur Lieferkette. Damit du weißt, welche Fragen die richtigen sind.',
-              items: ['BWL & VWL', 'Marketing & Marktforschung', 'Controlling & Rechnungswesen', 'Digitale Ökonomie', 'Beschaffung & Logistik'],
-            },
-            {
-              letter: 'T',
-              title: 'Technologie beherrschen',
-              color: '#2563eb',
-              desc: 'Du programmierst in Python, R und SQL. Du baust Dashboards, trainierst Machine-Learning-Modelle und arbeitest mit Datenbanken.',
-              items: ['Python, R, SQL', 'Statistik & Data Science', 'Business Intelligence & Dashboards', 'Ökonometrie & ML', 'Datenbanken & Big Data'],
-            },
-            {
-              letter: 'Ü',
-              title: 'Übergreifend denken',
-              color: '#059669',
-              desc: 'Daten sind mächtig — und brauchen Verantwortung. Du lernst, Ergebnisse zu kommunizieren, Projekte zu leiten und ethisch zu handeln.',
-              items: ['Datenschutz & Recht', 'Projektmanagement', 'Business English', 'Wissenschaftliches Arbeiten', 'Ethik der Digitalisierung'],
-            },
-          ].map((s, i) => (
-            <Reveal key={i} delay={`stagger-${i + 1}`}>
-              <div className="bg-white p-8 lg:p-10 h-full">
-                <span className="block text-5xl font-bold mb-5 select-none" style={{ fontFamily: 'Space Grotesk', color: s.color, opacity: 0.12 }}>{s.letter}</span>
-                <h3 className="text-lg font-semibold mb-3" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>{s.title}</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed mb-5">{s.desc}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {s.items.map((item, j) => (
-                    <span key={j} className="text-xs px-2.5 py-1 bg-neutral-50 text-neutral-600">{item}</span>
-                  ))}
-                </div>
-              </div>
-            </Reveal>
-          ))}
+        <Reveal>
+          <div className="flex flex-wrap gap-8 mb-12 text-base">
+            <div className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-[#E87722]" /> <span className="text-neutral-600 font-medium">Wirtschaft</span></div>
+            <div className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-[#2563eb]" /> <span className="text-neutral-600 font-medium">Technologie</span></div>
+            <div className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-[#059669]" /> <span className="text-neutral-600 font-medium">Überfachlich</span></div>
+            <div className="text-neutral-400">Verbindungen zeigen, wie Module zusammenspielen</div>
+          </div>
+        </Reveal>
+
+        <div ref={containerRef} className="relative w-full" style={{ aspectRatio: '16/9' }}>
+          <canvas ref={canvasRef} className="w-full h-full" />
         </div>
       </div>
     </section>
   )
 }
 
-/* ─── Semester-Journey ─── */
-function SemesterJourney() {
+
+/* ═══════════════════════════════════════════════════════════════
+   SEMESTER-FAHRPLAN — Vertikale Timeline mit Scroll-Reveal
+   ═══════════════════════════════════════════════════════════════ */
+
+function SemesterFahrplan() {
   const semesters = [
-    { sem: '1', label: 'Fundament', desc: 'Die Grundlagen: Wie Wirtschaft funktioniert, wie man mathematisch denkt, wie man programmiert.', items: ['BWL', 'Mikroökonomik', 'Mathematik', 'Wirtschaftsinformatik'] },
-    { sem: '2', label: 'Methoden', desc: 'Jetzt wird es analytisch: Erste statistische Methoden, erstes eigenes Programm, erste Datensätze.', items: ['Marketing', 'Statistik', 'Programmieren', 'Makroökonomik'] },
-    { sem: '3', label: 'Analytik', desc: 'Du baust dein erstes Dashboard. Du schreibst SQL. Du verstehst, warum Korrelation keine Kausalität ist.', items: ['Business Intelligence', 'Datenbanken', 'Ökonometrie', 'Operations Research'] },
-    { sem: '4', label: 'Vertiefung', desc: 'Python, Machine Learning, echte Marktforschungsprojekte. Ab hier wird es richtig spannend.', items: ['Data Science', 'DAV (Python)', 'Marktforschung', 'Controlling'] },
-    { sem: '5', label: 'Praxissemester', desc: 'Ein ganzes Semester im Unternehmen. Echte Projekte, echtes Team, echte Verantwortung.', items: ['Praktikum in einem Unternehmen deiner Wahl'], highlight: true },
-    { sem: '6–7', label: 'Spezialisierung & Abschluss', desc: 'Du wählst deinen Schwerpunkt und schreibst deine Bachelorarbeit — oft in Kooperation mit einem Unternehmen.', items: ['BA-Projekte', 'Schwerpunkt nach Wahl', 'Bachelorarbeit'] },
+    {
+      nr: 1, title: 'Grundlagen',
+      color: '#E87722',
+      items: ['BWL & VWL', 'Mathematik & Statistik', 'Einführung Programmieren (R)', 'Wirtschaftsinformatik'],
+    },
+    {
+      nr: 2, title: 'Methoden',
+      color: '#E87722',
+      items: ['Marketing & Marktforschung', 'Datenbanken (SQL)', 'Induktive Statistik', 'Rechnungswesen'],
+    },
+    {
+      nr: 3, title: 'Analytics',
+      color: '#2563eb',
+      items: ['Business Intelligence', 'Programmieren II (Python)', 'Ökonometrie', 'Digitale Ökonomie'],
+    },
+    {
+      nr: 4, title: 'Vertiefung',
+      color: '#2563eb',
+      items: ['Data Science & Machine Learning', 'DAV mit Python', 'Controlling', 'Projektmanagement'],
+    },
+    {
+      nr: 5, title: 'Praxis',
+      color: '#059669',
+      items: ['Praxissemester (20 Wochen)', 'Unternehmen oder Forschungsprojekt', 'Eigenes Datenprojekt'],
+    },
+    {
+      nr: 6, title: 'Spezialisierung',
+      color: '#059669',
+      items: ['Wahlpflichtmodule', 'Seminar (Forschungsprojekt)', 'Bachelorarbeit'],
+    },
+    {
+      nr: 7, title: 'Abschluss',
+      color: '#1A1A2E',
+      items: ['Bachelorarbeit fertigstellen', 'Optional: Auslandssemester', 'Berufseinstieg oder Master'],
+    },
   ]
+
   return (
-    <section className="py-24 lg:py-32 bg-[#FAFAF8]">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="fahrplan" className="py-28 lg:py-36 bg-[#FAFAF8]">
+      <div className="max-w-5xl mx-auto px-8 lg:px-16">
         <Reveal>
-          <p className="text-sm font-medium tracking-widest uppercase mb-4" style={{ color: '#E87722' }}>7 Semester</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
-            Vom ersten Code bis zur eigenen Analyse.
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Der Fahrplan</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+            7 Semester. Dein Weg.
           </h2>
-          <p className="text-lg text-neutral-500 max-w-3xl mb-16">
-            Jedes Semester baut auf dem vorherigen auf. Du merkst schnell, wie alles zusammenhängt — und wie du immer komplexere Probleme lösen kannst.
+          <p className="text-xl text-neutral-500 max-w-3xl mb-16 leading-relaxed">
+            Vom ersten Datensatz bis zur eigenen Bachelorarbeit — jedes Semester baut auf dem vorherigen auf.
           </p>
         </Reveal>
 
-        <div className="space-y-3">
-          {semesters.map((s, i) => (
-            <Reveal key={i} delay={`stagger-${Math.min(i + 1, 6)}`}>
-              <div className={`bg-white p-6 sm:p-8 ${s.highlight ? 'border-l-2 border-[#E87722]' : ''}`}>
-                <div className="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-10">
-                  <div className="lg:w-28 shrink-0">
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#E87722]">Sem {s.sem}</span>
-                    <p className="font-semibold mt-0.5" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>{s.label}</p>
+        <div className="relative">
+          {/* Vertikale Linie */}
+          <div className="absolute left-8 lg:left-10 top-0 bottom-0 w-px bg-neutral-200" />
+
+          <div className="space-y-12 lg:space-y-16">
+            {semesters.map((sem, i) => (
+              <Reveal key={sem.nr} delay={i < 4 ? `stagger-${i + 1}` : ''}>
+                <div className="flex gap-8 lg:gap-12 items-start">
+                  {/* Kreis */}
+                  <div className="relative z-10 flex-shrink-0">
+                    <div
+                      className="w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl lg:text-3xl"
+                      style={{ fontFamily: 'Space Grotesk', background: sem.color }}
+                    >
+                      {sem.nr}
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-neutral-500 leading-relaxed mb-3">{s.desc}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {s.items.map((item, j) => (
-                        <span key={j} className="text-xs px-3 py-1.5 bg-neutral-50 text-neutral-600">{item}</span>
+
+                  {/* Inhalt */}
+                  <div className="pt-2 lg:pt-4">
+                    <h3 className="text-2xl lg:text-3xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+                      {sem.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                      {sem.items.map((item, j) => (
+                        <span
+                          key={j}
+                          className="px-4 py-2 text-base font-medium bg-white border border-neutral-200 text-neutral-700"
+                          style={{ borderLeft: `3px solid ${sem.color}` }}
+                        >
+                          {item}
+                        </span>
                       ))}
                     </div>
                   </div>
                 </div>
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   )
 }
 
-/* ─── Berufswelt & Zukunftssicherheit ─── */
-function Berufswelt() {
-  const [showRoles, setShowRoles] = useState(true)
+
+/* ─── Markt-Wachstums-Chart (simpel, kein externer Dep) ─── */
+function MarketGrowthChart() {
+  const data = [
+    { year: '2022', value: 2.8 },
+    { year: '2023', value: 3.6 },
+    { year: '2024', value: 4.8 },
+    { year: '2025', value: 6.2 },
+    { year: '2027', value: 10.5 },
+    { year: '2030', value: 22.0 },
+  ]
+  const max = 24
   return (
-    <section id="berufswelt" className="py-24 lg:py-32 bg-white">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
-        <Reveal>
-          <p className="text-sm font-medium tracking-widest uppercase mb-4" style={{ color: '#E87722' }}>Nach dem Studium</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
-            Die Leute, die von allen gesucht werden.
-          </h2>
-          <p className="text-lg text-neutral-500 max-w-3xl mb-6">
-            Jedes Unternehmen hat Daten. Die wenigsten wissen, was sie damit anfangen sollen. BBA-Absolvent:innen schließen genau diese Lücke — sie verstehen das Geschäft <em>und</em> die Daten.
-          </p>
-          <p className="text-neutral-500 max-w-3xl mb-12">
-            Und ja: Gerade wegen KI werden diese Fähigkeiten wichtiger, nicht weniger. ChatGPT kann Texte schreiben — aber es kann keine Geschäftsstrategie aus Daten ableiten. Dafür braucht es Menschen, die beides verstehen.
-          </p>
-        </Reveal>
-
-        {/* Toggle */}
-        <Reveal>
-          <div className="flex gap-px mb-10">
-            <button onClick={() => setShowRoles(true)} className={`px-6 py-3 text-sm font-semibold transition-all ${showRoles ? 'bg-[#1A1A2E] text-white' : 'bg-neutral-100 text-neutral-500 hover:text-neutral-700'}`}>
-              Berufsprofile
-            </button>
-            <button onClick={() => setShowRoles(false)} className={`px-6 py-3 text-sm font-semibold transition-all ${!showRoles ? 'bg-[#1A1A2E] text-white' : 'bg-neutral-100 text-neutral-500 hover:text-neutral-700'}`}>
-              Echte Stellenanzeigen
-            </button>
+    <div className="space-y-3">
+      {data.map((d, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <span className="text-xs text-neutral-500 w-10 text-right font-mono">{d.year}</span>
+          <div className="flex-1 h-7 bg-white/5 relative overflow-hidden">
+            <div
+              className="h-full transition-all duration-1000"
+              style={{
+                width: `${(d.value / max) * 100}%`,
+                background: i >= 4 ? '#E87722' : '#2563eb',
+                opacity: i >= 4 ? 1 : 0.7,
+              }}
+            />
           </div>
-        </Reveal>
-
-        {showRoles ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-neutral-100">
-            {[
-              { title: 'Data Analyst', desc: 'Du analysierst Geschäftsdaten, erkennst Muster und lieferst die Grundlage für strategische Entscheidungen.', where: 'Jede Branche — von Automotive bis E-Commerce' },
-              { title: 'Business Intelligence Analyst', desc: 'Du baust Dashboards und Reportingsysteme, die dem Management zeigen, was im Unternehmen passiert — in Echtzeit.', where: 'Konzerne, Mittelstand, Beratungen' },
-              { title: 'Data Scientist', desc: 'Du entwickelst Vorhersagemodelle und Machine-Learning-Pipelines. Oft in Kombination mit einem Master.', where: 'Tech-Unternehmen, Forschung, Startups' },
-              { title: 'Business Analyst / Consultant', desc: 'Du übersetzt zwischen Fachbereich und IT. Du verstehst beide Seiten — und das ist selten und wertvoll.', where: 'Beratungen, Großunternehmen' },
-              { title: 'Product Analyst', desc: 'Du misst, wie Nutzer:innen ein Produkt verwenden, und leitest daraus Verbesserungen ab. A/B-Tests, Funnels, Retention.', where: 'Tech, SaaS, E-Commerce' },
-              { title: 'Controlling & FP&A', desc: 'Du verbindest klassisches Controlling mit modernen Analysemethoden. Forecasting, Szenarioplanung, KPI-Systeme.', where: 'Industrie, Finanzen, Mittelstand' },
-            ].map((role, i) => (
-              <Reveal key={i} delay={`stagger-${Math.min(i + 1, 6)}`}>
-                <div className="bg-white p-8 h-full">
-                  <h3 className="text-base font-semibold mb-2" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>{role.title}</h3>
-                  <p className="text-sm text-neutral-500 leading-relaxed mb-3">{role.desc}</p>
-                  <p className="text-xs text-neutral-400">{role.where}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {[
-              { company: 'BMW Group', role: 'Junior Data Analyst — Supply Chain Analytics', loc: 'München', detail: 'Analyse von Lieferkettendaten, Aufbau von Power BI Dashboards, statistische Prognosemodelle. Python, SQL, Power BI.' },
-              { company: 'McKinsey & Company', role: 'Business Analyst — Digital & Analytics', loc: 'Frankfurt / Berlin', detail: 'Datengetriebene Strategieprojekte für DAX-Unternehmen. Kundensegmentierung, Pricing-Optimierung, Operational Excellence.' },
-              { company: 'Zalando', role: 'Product Analyst', loc: 'Berlin', detail: 'A/B-Testing, Funnel-Analyse, Customer Lifetime Value Modelling. Python, BigQuery, Looker.' },
-              { company: 'Siemens', role: 'BI Developer & Data Analyst', loc: 'Erlangen', detail: 'Aufbau und Betrieb von BI-Lösungen für die Fertigungsindustrie. Tableau, SAP, Azure.' },
-              { company: 'Deutsche Bank', role: 'Risk Analytics Associate', loc: 'Frankfurt', detail: 'Quantitative Risikomodelle, regulatorisches Reporting, Szenarioanalysen. R, Python, SAS.' },
-              { company: 'CHECK24', role: 'Junior Business Analyst', loc: 'München', detail: 'Conversion-Optimierung, Marktanalysen, Wettbewerbsmonitoring. SQL, Python, Google Analytics.' },
-            ].map((job, i) => (
-              <Reveal key={i} delay={`stagger-${Math.min(i + 1, 6)}`}>
-                <div className="bg-neutral-50 p-6 sm:p-8">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
-                    <div>
-                      <h3 className="text-base font-semibold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>{job.role}</h3>
-                      <p className="text-sm font-medium text-[#E87722]">{job.company}</p>
-                    </div>
-                    <span className="text-xs text-neutral-400 shrink-0">{job.loc}</span>
-                  </div>
-                  <p className="text-sm text-neutral-500 leading-relaxed">{job.detail}</p>
-                </div>
-              </Reveal>
-            ))}
-            <Reveal>
-              <p className="text-xs text-neutral-400 mt-4">
-                Beispielhafte Stellenprofile basierend auf realen Ausschreibungen für Absolvent:innen mit Business-Analytics-Profil. Die genannten Unternehmen stehen exemplarisch für die Breite der Einsatzmöglichkeiten.
-              </p>
-            </Reveal>
-          </div>
-        )}
-
-        {/* KI-Argument */}
-        <Reveal>
-          <div className="mt-12 p-8 lg:p-10 bg-[#FAFAF8]">
-            <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
-              Aber ersetzt KI nicht bald solche Jobs?
-            </h3>
-            <div className="grid lg:grid-cols-2 gap-8 text-sm text-neutral-500 leading-relaxed">
-              <div>
-                <p className="mb-3">
-                  KI verändert die Arbeitswelt — aber sie macht datenkundige Menschen nicht überflüssig. Im Gegenteil: Jemand muss KI-Modelle verstehen, ihre Ergebnisse bewerten und die richtigen Geschäftsentscheidungen daraus ableiten.
-                </p>
-                <p>
-                  Ein Sprachmodell kann eine Tabelle zusammenfassen. Aber es kann nicht beurteilen, ob ein Preismodell zum Wettbewerbsumfeld passt oder ob eine Korrelation geschäftsrelevant ist.
-                </p>
-              </div>
-              <div>
-                <p className="mb-3">
-                  BBA-Absolvent:innen sind die Menschen, die KI-Tools <em>einsetzen und steuern</em> — nicht die, die durch sie ersetzt werden. Sie sind die Schnittstelle zwischen Algorithmus und Boardroom.
-                </p>
-                <p>
-                  Laut dem <span className="text-neutral-700">World Economic Forum Future of Jobs Report</span> gehören Data Analysts und Business Intelligence Analysts zu den am schnellsten wachsenden Berufsfeldern weltweit.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </section>
+          <span className="text-xs text-neutral-400 w-14 font-mono">{d.value} Mrd $</span>
+        </div>
+      ))}
+      <p className="text-xs text-neutral-600 mt-1">Prognose ab 2025 (CAGR 26,7%)</p>
+    </div>
   )
 }
 
-/* ─── DAV Live Sample ─── */
-function DAVSample() {
-  const [step, setStep] = useState(0)
-  const [output, setOutput] = useState<string[]>([])
-  const [isRunning, setIsRunning] = useState(false)
 
-  const codeSteps = [
-    {
-      title: '1. Laden',
-      code: `import pandas as pd
+/* ═══════════════════════════════════════════════════════════════
+   BERUFSWELT — Profile + Stellenanzeigen + KI-Argument
+   ═══════════════════════════════════════════════════════════════ */
 
-# Eistee-Absatzdaten laden
-df = pd.read_csv("eistee_sales.csv")
-print(df.head())
-print(f"\\n{len(df)} Datensätze geladen.")`,
-      output: [
-        '   Monat  Markt      Region  Absatz  Preis  Temperatur',
-        '0  Jan    Rewe_001   Urban     120   2.49      2.1',
-        '1  Jan    Edeka_015  Rural      45   2.29      1.8',
-        '2  Feb    Rewe_001   Urban     135   2.49      4.3',
-        '3  Feb    Edeka_015  Rural      52   2.29      3.9',
-        '4  Mär    Rewe_001   Urban     210   2.49      9.7',
-        '',
-        '2400 Datensätze geladen.',
-      ],
-    },
-    {
-      title: '2. Bereinigen',
-      code: `# Fehlende Werte & Ausreißer
-print("Fehlende Werte:")
-print(df.isnull().sum())
+function Berufswelt() {
+  const [view, setView] = useState<'profile' | 'stellen' | 'ki'>('profile')
 
-Q1 = df["Absatz"].quantile(0.25)
-Q3 = df["Absatz"].quantile(0.75)
-df_clean = df[
-    (df["Absatz"] >= Q1 - 1.5*(Q3-Q1)) &
-    (df["Absatz"] <= Q3 + 1.5*(Q3-Q1))
-]
-print(f"\\n{len(df)-len(df_clean)} Ausreißer entfernt.")`,
-      output: [
-        'Fehlende Werte:',
-        'Monat         0',
-        'Markt         3',
-        'Region        0',
-        'Absatz        7',
-        'Preis         0',
-        'Temperatur    2',
-        '',
-        '23 Ausreißer entfernt.',
-      ],
-    },
-    {
-      title: '3. Analysieren',
-      code: `# Absatz nach Region
-grouped = df_clean.groupby("Region")["Absatz"]
-print(grouped.describe().round(1))
-
-# Korrelation: Temperatur → Absatz
-corr = df_clean["Temperatur"].corr(
-    df_clean["Absatz"]
-)
-print(f"\\nKorrelation Temp↔Absatz: {corr:.2f}")
-print("→ Starker positiver Zusammenhang!")`,
-      output: [
-        '         count  mean    std   min    25%    50%    75%    max',
-        'Urban   1200.0  285.3  98.7  45.0  210.0  275.0  350.0  620.0',
-        'Rural    800.0   95.2  42.1  12.0   62.0   89.0  122.0  245.0',
-        'Suburb   377.0  175.8  63.4  32.0  125.0  168.0  220.0  385.0',
-        '',
-        'Korrelation Temp↔Absatz: 0.84',
-        '→ Starker positiver Zusammenhang!',
-      ],
-    },
-    {
-      title: '4. Visualisieren',
-      code: `import matplotlib.pyplot as plt
-
-fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
-df_clean.boxplot("Absatz", by="Region",
-                  ax=axes[0])
-axes[0].set_title("Absatz nach Region")
-
-colors = {"Urban":"#E87722",
-          "Rural":"#2563eb",
-          "Suburb":"#059669"}
-for region, grp in df_clean.groupby("Region"):
-    axes[1].scatter(
-        grp["Temperatur"], grp["Absatz"],
-        c=colors[region], label=region,
-        alpha=0.5, s=20)
-axes[1].legend()
-plt.savefig("analyse.png", dpi=150)
-print("Gespeichert: analyse.png")`,
-      output: [
-        'Gespeichert: analyse.png',
-        '',
-        '  Absatz nach Region          Temperatur vs. Absatz',
-        '  ┌─────────────────┐         ┌─────────────────────┐',
-        '  │     ┬            │         │            ·  · ··  │',
-        '  │  ┌──┤  Urban     │         │        ·· ·· ·····  │',
-        '  │  └──┤  285 avg   │         │     · · ···· ····   │',
-        '  │     ┴            │         │   · ·· ·· ···       │',
-        '  │   ┬              │         │  ··· ··             │',
-        '  │ ┌─┤  Suburb      │         │ ··                  │',
-        '  │ └─┤  176 avg     │         ├─────────────────────┤',
-        '  │   ┴              │         0°C    10°C     25°C  │',
-        '  │  ┬               │         └─────────────────────┘',
-        '  │ ┌┤  Rural        │',
-        '  │ └┤   95 avg      │         Urban 3× besser',
-        '  └─────────────────┘         Temp erklärt 71% der Varianz',
-      ],
-    },
-    {
-      title: '5. Empfehlung',
-      code: `# Management-Empfehlung aus den Daten
-empfehlung = """
-HANDLUNGSEMPFEHLUNG
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Launch im Mai (Temp > 15°C)
-2. Fokus auf 60 urbane Top-Märkte
-3. Pricing: 2.79€ (Premium)
-4. Rural erst in Phase 2
-
-Erwarteter Uplift: +52% vs. Bauch
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"""
-print(empfehlung)`,
-      output: [
-        '',
-        'HANDLUNGSEMPFEHLUNG',
-        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-        '1. Launch im Mai (Temp > 15°C)',
-        '2. Fokus auf 60 urbane Top-Märkte',
-        '3. Pricing: 2.79€ (Premium)',
-        '4. Rural erst in Phase 2',
-        '',
-        'Erwarteter Uplift: +52% vs. Bauch',
-        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-      ],
-    },
+  const profiles = [
+    { title: 'Business Analyst', bereich: 'Unternehmensberatung', desc: 'Geschäftsprozesse analysieren, KPIs definieren, Dashboards bauen. Brücke zwischen Fachabteilung und IT.' },
+    { title: 'Data Analyst', bereich: 'Konzern / Mittelstand', desc: 'Große Datenmengen strukturieren, Muster erkennen, Handlungsempfehlungen ableiten.' },
+    { title: 'BI-Consultant', bereich: 'IT-Beratung', desc: 'Data Warehouses designen, ETL-Prozesse aufsetzen, Reporting-Systeme implementieren.' },
+    { title: 'Marketing Analyst', bereich: 'E-Commerce / Agentur', desc: 'Customer Journeys auswerten, A/B-Tests durchführen, Kampagnen-ROI berechnen.' },
+    { title: 'Controlling-Analyst', bereich: 'Finanzen', desc: 'Budgets modellieren, Forecasts erstellen, Abweichungsanalysen für die Geschäftsführung.' },
+    { title: 'Data Scientist', bereich: 'Tech / Startup', desc: 'Predictive Models bauen, Machine Learning einsetzen, aus Daten Produkte machen.' },
   ]
 
-  const runStep = useCallback(() => {
-    if (step >= codeSteps.length) return
-    setIsRunning(true)
-    const lines = codeSteps[step].output
-    let lineIdx = 0
-    setOutput([])
-    const interval = setInterval(() => {
-      if (lineIdx < lines.length) {
-        setOutput(prev => [...prev, lines[lineIdx]])
-        lineIdx++
-      } else {
-        clearInterval(interval)
-        setIsRunning(false)
-      }
-    }, 80)
-  }, [step])
-
-  const nextStep = () => {
-    if (step < codeSteps.length - 1) {
-      setStep(s => s + 1)
-      setOutput([])
-    }
-  }
+  const stellen = [
+    { firma: 'BMW Group', titel: 'Junior Business Analyst (m/w/d)', ort: 'München', gehalt: '52–62k €', tags: ['SQL', 'Power BI', 'SAP'], link: 'https://www.stepstone.de/jobs/business-analyst/in-muenchen' },
+    { firma: 'McKinsey', titel: 'Business Analyst', ort: 'Frankfurt', gehalt: '65–75k €', tags: ['Datenanalyse', 'Präsentation', 'Excel'], link: 'https://www.linkedin.com/jobs/business-analyst-jobs-germany/' },
+    { firma: 'Zalando', titel: 'Data Analyst Marketing', ort: 'Berlin', gehalt: '48–58k €', tags: ['Python', 'SQL', 'A/B Testing'], link: 'https://www.stepstone.de/jobs/data-analyst/in-berlin' },
+    { firma: 'Siemens', titel: 'BI Consultant', ort: 'Erlangen', gehalt: '55–65k €', tags: ['Power BI', 'DAX', 'Azure'], link: 'https://www.stepstone.de/jobs/business-intelligence' },
+    { firma: 'Deutsche Bank', titel: 'Risk Analyst', ort: 'Frankfurt', gehalt: '58–68k €', tags: ['R', 'SQL', 'Statistik'], link: 'https://careers.db.com/professionals/search-roles/' },
+    { firma: 'CHECK24', titel: 'BI Analyst', ort: 'München', gehalt: '50–60k €', tags: ['Python', 'Tableau', 'ETL'], link: 'https://www.stepstone.de/jobs/data-analyst' },
+    { firma: 'Bosch', titel: 'Data Scientist (Junior)', ort: 'Stuttgart', gehalt: '55–65k €', tags: ['Python', 'ML', 'Spark'], link: 'https://www.stepstone.de/jobs/data-scientist' },
+    { firma: 'Allianz', titel: 'Actuarial Data Analyst', ort: 'München', gehalt: '50–60k €', tags: ['R', 'SAS', 'Statistik'], link: 'https://www.datacareer.de/categories/dataanalytics/' },
+    { firma: 'SAP', titel: 'Associate BI Consultant', ort: 'Walldorf', gehalt: '55–65k €', tags: ['SAP BW', 'SQL', 'HANA'], link: 'https://www.linkedin.com/jobs/business-analyst-jobs-germany/' },
+  ]
 
   return (
-    <section id="dav" className="py-24 lg:py-32" style={{ background: '#0D1117' }}>
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="berufswelt" className="py-28 lg:py-36" style={{ background: '#1A1A2E' }}>
+      <div className="max-w-7xl mx-auto px-8 lg:px-16">
         <Reveal>
-          <p className="text-sm font-medium tracking-widest uppercase mb-4" style={{ color: '#E87722' }}>Ausprobieren</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: 'Space Grotesk' }}>
-            Das ist kein Hörsaal. Das ist Python.
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Nach dem Studium</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white" style={{ fontFamily: 'Space Grotesk' }}>
+            Was du damit machen kannst.
           </h2>
-          <p className="text-lg text-neutral-400 max-w-3xl mb-4">
-            Im Modul <strong className="text-white">Datenaufbereitung und -verarbeitung</strong> arbeitest du ab Semester 4 mit Python an echten Datensätzen. Hier siehst du, wie die Analyse aus der Fallstudie oben tatsächlich aussieht — Zeile für Zeile.
-          </p>
-          <p className="text-sm text-neutral-500 max-w-2xl mb-12">
-            Klicke auf „Ausführen" und geh die fünf Schritte durch.
+          <p className="text-xl text-neutral-400 max-w-3xl mb-12 leading-relaxed">
+            Business Analytics ist kein Nischenfach — es ist eine der gefragtesten Qualifikationen auf dem Arbeitsmarkt.
           </p>
         </Reveal>
 
         <Reveal>
-          <div className="flex gap-px mb-8 overflow-x-auto pb-2">
-            {codeSteps.map((s, i) => (
-              <button key={i} onClick={() => { setStep(i); setOutput([]) }} className={`whitespace-nowrap px-4 py-2 text-xs font-medium transition-all ${i === step ? 'bg-[#E87722] text-white' : i < step ? 'bg-white/5 text-neutral-400' : 'bg-white/5 text-neutral-600 hover:text-neutral-300'}`}>
-                {s.title}
+          <div className="flex flex-wrap gap-px mb-12">
+            {[
+              { key: 'profile' as const, label: 'Berufsprofile' },
+              { key: 'stellen' as const, label: 'Echte Stellenanzeigen' },
+              { key: 'ki' as const, label: 'Warum gerade jetzt' },
+            ].map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setView(tab.key)}
+                className={`px-8 py-4 text-base font-semibold transition-all ${view === tab.key ? 'bg-[#E87722] text-white' : 'bg-white/5 text-neutral-500 hover:text-white'}`}
+              >
+                {tab.label}
               </button>
             ))}
           </div>
         </Reveal>
 
-        <Reveal>
-          <div className="grid lg:grid-cols-2 gap-px bg-neutral-800 border border-neutral-800 overflow-hidden">
-            <div className="bg-[#161B22] p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-neutral-600" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-neutral-600" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-neutral-600" />
-                  <span className="text-xs text-neutral-500 ml-2">analyse.py</span>
+        {view === 'profile' && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
+            {profiles.map((p, i) => (
+              <Reveal key={i} delay={i < 6 ? `stagger-${i + 1}` : ''}>
+                <div className="p-8 lg:p-10 bg-[#1e1e3e] h-full">
+                  <p className="text-[#E87722] text-sm font-bold uppercase tracking-widest mb-3">{p.bereich}</p>
+                  <h3 className="text-xl lg:text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Space Grotesk' }}>{p.title}</h3>
+                  <p className="text-base text-neutral-400 leading-relaxed">{p.desc}</p>
                 </div>
-                <span className="text-xs text-neutral-600">Python 3.11</span>
-              </div>
-              <pre className="code-block text-neutral-300 overflow-x-auto">
-                <code>{codeSteps[step].code.split('\n').map((line, i) => {
-                  let highlighted = line
-                    .replace(/(import |from |print|def |return |for |in |if |else:)/g, '<span style="color:#ff7b72">$1</span>')
-                    .replace(/(#.*)/g, '<span style="color:#8b949e">$1</span>')
-                    .replace(/(".*?"|'.*?')/g, '<span style="color:#a5d6ff">$1</span>')
-                    .replace(/(\d+\.?\d*)/g, '<span style="color:#79c0ff">$1</span>')
-                    .replace(/(pd|plt|df|df_clean|fig|axes|grouped|corr|empfehlung)/g, '<span style="color:#d2a8ff">$1</span>')
-                  return (
-                    <div key={i} className="flex">
-                      <span className="w-8 text-right mr-4 text-neutral-700 select-none">{i + 1}</span>
-                      <span dangerouslySetInnerHTML={{ __html: highlighted }} />
-                    </div>
-                  )
-                })}</code>
-              </pre>
-              <div className="flex gap-2 mt-6">
-                <button onClick={runStep} disabled={isRunning} className={`px-5 py-2 text-sm font-semibold transition-all ${isRunning ? 'bg-neutral-700 text-neutral-500 cursor-wait' : 'bg-[#E87722] text-white hover:bg-[#d06a1e]'}`}>
-                  {isRunning ? 'Läuft...' : 'Ausführen'}
-                </button>
-                {output.length > 0 && step < codeSteps.length - 1 && (
-                  <button onClick={nextStep} className="px-5 py-2 text-sm font-semibold bg-white/10 text-neutral-300 hover:text-white transition-colors">
-                    Weiter
-                  </button>
-                )}
-              </div>
-            </div>
+              </Reveal>
+            ))}
+          </div>
+        )}
 
-            <div className="bg-[#0D1117] p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-neutral-500">Terminal</span>
-              </div>
-              <div className="code-block text-green-400/80 min-h-[300px] overflow-y-auto">
-                {output.length === 0 ? (
-                  <span className="text-neutral-700">$ python analyse.py</span>
-                ) : (
-                  output.map((line, i) => (
-                    <div key={i} className="animate-[fadeIn_0.15s_ease-out]">{line || '\u00A0'}</div>
-                  ))
-                )}
-                {isRunning && <span className="inline-block w-1.5 h-4 bg-green-400/80 animate-pulse ml-0.5" />}
-              </div>
+        {view === 'stellen' && (
+          <div>
+            <p className="text-sm text-neutral-600 mb-6">Beispielhafte Stellenprofile nach Vorbild realer Ausschreibungen — Links führen zu aktuellen Jobbörsen</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
+              {stellen.map((s, i) => (
+                <Reveal key={i} delay={i < 6 ? `stagger-${i + 1}` : ''}>
+                  <a href={s.link} target="_blank" rel="noopener noreferrer" className="block p-8 lg:p-10 bg-[#1e1e3e] h-full hover:bg-[#252550] transition-colors group">
+                    <p className="text-white font-bold text-lg mb-1 group-hover:text-[#E87722] transition-colors" style={{ fontFamily: 'Space Grotesk' }}>{s.firma}</p>
+                    <p className="text-[#E87722] font-semibold mb-2">{s.titel}</p>
+                    <p className="text-neutral-500 text-sm mb-4">{s.ort} · {s.gehalt}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {s.tags.map((t, j) => (
+                        <span key={j} className="text-xs font-medium px-3 py-1 bg-white/5 text-neutral-400">{t}</span>
+                      ))}
+                    </div>
+                  </a>
+                </Reveal>
+              ))}
             </div>
           </div>
-        </Reveal>
+        )}
+
+        {view === 'ki' && (
+          <div className="grid lg:grid-cols-5 gap-12">
+            <Reveal className="lg:col-span-3">
+              <div className="space-y-10 text-lg leading-relaxed">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Space Grotesk' }}>KI verändert den Arbeitsmarkt. Aber nicht so, wie viele denken.</h3>
+                  <p className="text-neutral-400">
+                    Automatisiert werden repetitive Aufgaben — Daten eintippen, einfache Reports erstellen, Standardauswertungen. Was nicht automatisiert wird: die richtigen Fragen stellen, Ergebnisse einordnen, Entscheidungen treffen.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Space Grotesk' }}>Warum BBA-Absolventen profitieren</h3>
+                  <p className="text-neutral-400">
+                    KI-Tools wie ChatGPT oder Copilot sind mächtige Werkzeuge — aber nur für diejenigen, die wissen, was sie fragen müssen und wie sie die Ergebnisse bewerten. Genau das lernt man im BBA: kritisches Denken mit Daten.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Space Grotesk' }}>Die Nachfrage wächst</h3>
+                  <p className="text-neutral-400">
+                    Je mehr Daten Unternehmen sammeln, desto mehr brauchen sie Menschen, die damit umgehen können. Der Markt für Data-Professionals wächst seit Jahren zweistellig — und durch KI beschleunigt sich das noch.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Arbeitsmarkt-Statistik */}
+            <Reveal delay="stagger-2" className="lg:col-span-2">
+              <div className="space-y-8">
+                <h3 className="text-lg font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Data Analytics Markt Deutschland</h3>
+                <MarketGrowthChart />
+                <div className="space-y-4 text-sm text-neutral-500">
+                  <p>Quelle: Grand View Research, IMARC Group (2025)</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
+                      <span className="text-neutral-400">Offene Data-Analyst-Stellen (DE)</span>
+                      <span className="text-white font-bold text-base" style={{ fontFamily: 'Space Grotesk' }}>4.000+</span>
+                    </div>
+                    <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
+                      <span className="text-neutral-400">Durchschnittsgehalt</span>
+                      <span className="text-white font-bold text-base" style={{ fontFamily: 'Space Grotesk' }}>52–67k €</span>
+                    </div>
+                    <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
+                      <span className="text-neutral-400">Jährliches Marktwachstum</span>
+                      <span className="text-[#E87722] font-bold text-base" style={{ fontFamily: 'Space Grotesk' }}>+26,7%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        )}
       </div>
     </section>
   )
 }
 
-/* ─── Würzburg ─── */
+
+/* ═══════════════════════════════════════════════════════════════
+   WÜRZBURG
+   ═══════════════════════════════════════════════════════════════ */
+
 function Wuerzburg() {
   return (
-    <section id="wuerzburg" className="py-24 lg:py-32 bg-white">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="wuerzburg" className="py-28 lg:py-36 bg-white">
+      <div className="max-w-7xl mx-auto px-8 lg:px-16">
         <Reveal>
-          <p className="text-sm font-medium tracking-widest uppercase mb-4" style={{ color: '#E87722' }}>Der Ort</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
-            Würzburg ist kein Zufall.
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Der Standort</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+            Würzburg.
           </h2>
-          <p className="text-lg text-neutral-500 max-w-3xl mb-16">
-            130.000 Einwohner, 35.000 davon Studierende. Würzburg ist klein genug, um zu Fuß überall hinzukommen — und groß genug, dass es nie langweilig wird.
-          </p>
         </Reveal>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          <div className="space-y-8">
-            <Reveal>
-              <div>
-                <h3 className="text-base font-semibold mb-2" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>THWS Business School</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  Kleine Kurse, Professoren die deinen Namen kennen, Labore mit aktueller Software. Kein anonymer Massenbetrieb. Die THWS wurde mehrfach als eine der besten Hochschulen für angewandte Wissenschaften in Deutschland ausgezeichnet. Praxissemester und Unternehmenskooperationen sind fester Bestandteil — nicht optionales Extra.
-                </p>
-              </div>
-            </Reveal>
-            <Reveal delay="stagger-1">
-              <div>
-                <h3 className="text-base font-semibold mb-2" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>CAIRO — das KI-Zentrum</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  Das Center for Artificial Intelligence and Robotics (CAIRO) forscht direkt am Campus an KI, Computer Vision und Robotik. Als BBA-Studierende:r hast du die Möglichkeit, in Projekten und Abschlussarbeiten mit dem Zentrum zusammenzuarbeiten — und damit an Technologie zu arbeiten, die gerade die Industrie verändert.
-                </p>
-              </div>
-            </Reveal>
-            <Reveal delay="stagger-2">
-              <div>
-                <h3 className="text-base font-semibold mb-2" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>Die Stadt</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  UNESCO-Welterbe Residenz, Alte Mainbrücke, Weinfeste im Sommer, eine der höchsten Kneipen-pro-Kopf-Dichten Deutschlands. Die Mieten sind für eine Uni-Stadt noch bezahlbar, die Wege kurz, die Community eng. Viele Studierende sagen: Würzburg fühlt sich nach zwei Wochen wie zuhause an.
-                </p>
-              </div>
-            </Reveal>
-            <Reveal delay="stagger-3">
-              <div>
-                <h3 className="text-base font-semibold mb-2" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>Lage & Vernetzung</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  ICE-Anbindung nach Frankfurt (1h), München (2h), Berlin (3h). Die Region Main-Franken hat einen starken Mittelstand — viele Praxissemester- und Werkstudenten-Stellen direkt vor der Haustür. Und wer weiter will: Partnerhochschulen für Auslandssemester auf vier Kontinenten.
-                </p>
-              </div>
-            </Reveal>
-          </div>
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
+          <Reveal>
+            <div className="space-y-8 text-lg text-neutral-600 leading-relaxed">
+              <p>
+                130.000 Einwohner, davon 35.000 Studierende. Würzburg ist eine Stadt, in der sich alles zu Fuß oder mit dem Rad erreichen lässt — Uni, Cafés, Mainufer, Altstadt.
+              </p>
+              <p>
+                Die Lebenshaltungskosten liegen deutlich unter München oder Frankfurt. WG-Zimmer ab 350 €, Mensaessen ab 2,60 €, Semesterticket für ganz Unterfranken inklusive.
+              </p>
+              <p>
+                Die THWS (Technische Hochschule Würzburg-Schweinfurt) ist bekannt für praxisnahe Lehre mit direktem Kontakt zu Professoren und kleinen Kursgrößen — kein anonymer Massenbetrieb.
+              </p>
+              <p>
+                Die Region ist wirtschaftlich stark: Unternehmen wie s.Oliver, Brose, Koenig & Bauer und zahlreiche IT-Dienstleister bieten Praktikums- und Einstiegsmöglichkeiten direkt vor Ort.
+              </p>
+            </div>
+          </Reveal>
 
-          <div>
-            <Reveal delay="stagger-2">
-              <div className="sticky top-24 space-y-6">
-                <div className="bg-[#FAFAF8] p-10">
-                  <p className="text-6xl font-bold leading-none mb-8" style={{ fontFamily: 'Space Grotesk', color: '#E87722', opacity: 0.12 }}>WÜ</p>
-                  <div className="space-y-5">
-                    <div>
-                      <p className="text-2xl font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>27%</p>
-                      <p className="text-sm text-neutral-500">der Einwohner sind Studierende</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>1h</p>
-                      <p className="text-sm text-neutral-500">mit dem ICE nach Frankfurt</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>Top 10</p>
-                      <p className="text-sm text-neutral-500">beliebteste Studentenstädte Deutschlands</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold" style={{ fontFamily: 'Space Grotesk', color: '#E87722' }}>1</p>
-                      <p className="text-sm text-neutral-500">UNESCO-Welterbe direkt in der Stadt</p>
-                    </div>
-                  </div>
+          <Reveal delay="stagger-2">
+            <div className="space-y-6">
+              {[
+                { label: 'Studierende in Würzburg', value: '35.000' },
+                { label: 'Ranking: Lebensqualität Studentenstädte', value: 'Top 10' },
+                { label: 'Entfernung Innenstadt — Campus', value: '10 min (Rad)' },
+                { label: 'WG-Zimmer ab', value: '~350 €/Monat' },
+                { label: 'Semesterticket', value: 'ganz Unterfranken' },
+                { label: 'Sonnenstunden pro Jahr', value: '1.750+' },
+              ].map((fact, i) => (
+                <div key={i} className="flex justify-between items-baseline border-b border-neutral-100 pb-4">
+                  <span className="text-base text-neutral-500">{fact.label}</span>
+                  <span className="text-xl font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>{fact.value}</span>
                 </div>
-                <div className="bg-[#1A1A2E] p-8 text-sm text-neutral-400 leading-relaxed">
-                  <p className="text-white font-semibold mb-2" style={{ fontFamily: 'Space Grotesk' }}>Kein NC</p>
-                  <p>Du brauchst keinen Einser-Schnitt. Das Studium ist zulassungsfrei — was zählt, ist dein Interesse, nicht dein Abiturdurchschnitt.</p>
-                </div>
-              </div>
-            </Reveal>
-          </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
   )
 }
 
-/* ─── Call to Action ─── */
+
+/* ═══════════════════════════════════════════════════════════════
+   CTA — Bewerbung
+   ═══════════════════════════════════════════════════════════════ */
+
 function CTA() {
   return (
-    <section id="bewerben" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#1A1A2E' }}>
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 relative">
+    <section id="bewerben" className="py-28 lg:py-36 bg-[#FAFAF8]">
+      <div className="max-w-4xl mx-auto px-8 lg:px-16 text-center">
         <Reveal>
-          <p className="text-sm font-medium tracking-widest uppercase mb-4" style={{ color: '#E87722' }}>Bewerbung</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-white" style={{ fontFamily: 'Space Grotesk' }}>
-            Du hast gerade gesehen, wie bessere Entscheidungen entstehen.
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Nächster Schritt</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+            Bereit für datenbasierte Entscheidungen?
           </h2>
-          <p className="text-xl lg:text-2xl mb-16 text-neutral-400" style={{ fontFamily: 'Space Grotesk' }}>
-            Jetzt ist es <span className="text-[#E87722] font-semibold">deine</span> Entscheidung.
+          <p className="text-xl text-neutral-500 max-w-2xl mx-auto mb-12 leading-relaxed">
+            Bewerbungsstart ist jedes Jahr im Mai. Kein NC — die Motivation zählt.
           </p>
         </Reveal>
 
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
-          <div className="lg:col-span-3">
-            <Reveal>
-              <div className="space-y-6 text-sm text-neutral-400 leading-relaxed">
-                <p>
-                  Die Bewerbung läuft über das THWS Campusportal. Du brauchst dein Abiturzeugnis (oder ein gleichwertiges Zeugnis) — mehr nicht. Es gibt keinen NC, kein Auswahlverfahren, keinen Eignungstest.
-                </p>
-                <p>
-                  Der Bewerbungszeitraum für das Wintersemester ist <span className="text-white font-medium">1. Mai bis 15. Juli</span>. Studienstart ist im Oktober.
-                </p>
-                <p>
-                  Wenn du Fragen hast — zur Bewerbung, zum Studieninhalt, zu Würzburg — schreib uns. Wir antworten persönlich, nicht mit einem Formbrief.
-                </p>
-              </div>
-            </Reveal>
-
-            <Reveal>
-              <div className="flex flex-wrap gap-4 mt-10">
-                <a href="https://campusportal.thws.de" target="_blank" rel="noopener noreferrer"
-                  className="bg-[#E87722] text-white px-8 py-4 text-sm font-bold tracking-wide hover:bg-[#d06a1e] transition-colors">
-                  Jetzt bewerben — Campusportal
-                </a>
-                <a href="https://www.thws.de/studium-an-der-thws/studieren/studiengaenge/business-analytics/" target="_blank" rel="noopener noreferrer"
-                  className="border border-white/20 text-white px-8 py-4 text-sm font-bold tracking-wide hover:border-white/40 transition-colors">
-                  Alle Infos auf thws.de
-                </a>
-              </div>
-            </Reveal>
+        <Reveal delay="stagger-1">
+          <div className="grid sm:grid-cols-3 gap-8 mb-14 text-left max-w-2xl mx-auto">
+            <div>
+              <p className="text-sm text-neutral-400 uppercase tracking-widest mb-1">Abschluss</p>
+              <p className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>B.Sc.</p>
+            </div>
+            <div>
+              <p className="text-sm text-neutral-400 uppercase tracking-widest mb-1">Dauer</p>
+              <p className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>7 Semester</p>
+            </div>
+            <div>
+              <p className="text-sm text-neutral-400 uppercase tracking-widest mb-1">Start</p>
+              <p className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>Oktober</p>
+            </div>
           </div>
+        </Reveal>
 
-          <div className="lg:col-span-2">
-            <Reveal delay="stagger-2">
-              <div className="bg-white/5 p-8 space-y-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-neutral-500 mb-4">Auf einen Blick</p>
-                <div className="space-y-4 text-sm">
-                  <div className="flex justify-between border-b border-white/5 pb-3">
-                    <span className="text-neutral-500">Abschluss</span>
-                    <span className="text-white font-medium">Bachelor of Arts (B.A.)</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/5 pb-3">
-                    <span className="text-neutral-500">Regelstudienzeit</span>
-                    <span className="text-white font-medium">7 Semester</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/5 pb-3">
-                    <span className="text-neutral-500">Zulassung</span>
-                    <span className="text-[#E87722] font-medium">Zulassungsfrei</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/5 pb-3">
-                    <span className="text-neutral-500">Studienstart</span>
-                    <span className="text-white font-medium">Wintersemester (Oktober)</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/5 pb-3">
-                    <span className="text-neutral-500">Bewerbung</span>
-                    <span className="text-white font-medium">1. Mai – 15. Juli</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/5 pb-3">
-                    <span className="text-neutral-500">Sprache</span>
-                    <span className="text-white font-medium">Deutsch</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-500">Praxissemester</span>
-                    <span className="text-white font-medium">Ja (5. Semester)</span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-
-        <Reveal>
-          <div className="text-sm text-neutral-500 border-t border-white/5 pt-8">
-            <p>Fragen? Schreib direkt an <a href="mailto:studienberatung@thws.de" className="text-[#E87722] hover:underline">studienberatung@thws.de</a> oder an <a href="mailto:robert.butscher@thws.de" className="text-[#E87722] hover:underline">Prof. Dr. Robert Butscher</a>.</p>
-          </div>
+        <Reveal delay="stagger-2">
+          <a
+            href="https://www.thws.de/beratung-und-service/bewerbung-immatrikulation-pruefungen-praktikum/bewerbung/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-[#E87722] text-white px-14 py-5 text-xl font-bold tracking-wide hover:bg-[#d06a1e] transition-colors"
+          >
+            Jetzt bewerben
+          </a>
+          <p className="mt-6 text-base text-neutral-400">
+            Fragen? Schreib an <a href="mailto:studienberatung@thws.de" className="text-[#E87722] hover:underline">studienberatung@thws.de</a>
+          </p>
         </Reveal>
       </div>
     </section>
   )
 }
+
 
 /* ─── Footer ─── */
 function Footer() {
   return (
-    <footer className="py-10 bg-[#0a0a18] border-t border-white/5">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="font-bold text-sm" style={{ fontFamily: 'Space Grotesk', color: '#E87722' }}>BBA</span>
-            <span className="text-xs text-neutral-600">Bachelor Business Analytics · THWS Business School Würzburg</span>
-          </div>
-          <div className="flex items-center gap-6 text-xs text-neutral-600">
-            <a href="https://www.thws.de/studium-an-der-thws/studieren/studiengaenge/business-analytics/" target="_blank" rel="noopener noreferrer" className="hover:text-[#E87722] transition-colors">THWS</a>
-            <a href="https://campusportal.thws.de" target="_blank" rel="noopener noreferrer" className="hover:text-[#E87722] transition-colors">Bewerben</a>
-            <a href="mailto:robert.butscher@thws.de" className="hover:text-[#E87722] transition-colors">Kontakt</a>
-          </div>
+    <footer className="py-12 bg-[#1A1A2E]">
+      <div className="max-w-7xl mx-auto px-8 lg:px-16 flex flex-wrap justify-between items-center gap-6 text-sm text-neutral-500">
+        <div className="flex items-center gap-3">
+          <span className="font-bold text-base" style={{ fontFamily: 'Space Grotesk', color: '#E87722' }}>BBA</span>
+          <span>THWS Würzburg</span>
+        </div>
+        <div className="flex gap-8">
+          <a href="https://www.thws.de/impressum" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">Impressum</a>
+          <a href="https://www.thws.de/datenschutz" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">Datenschutz</a>
+          <a href="https://www.thws.de" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">thws.de</a>
         </div>
       </div>
     </footer>
   )
 }
-
-/* ─── App ─── */
-function App() {
-  return (
-    <div className="min-h-screen">
-      <Nav />
-      <Hero />
-      <Fallstudie />
-      <WasDuLernst />
-      <SemesterJourney />
-      <Berufswelt />
-      <DAVSample />
-      <Wuerzburg />
-      <CTA />
-      <Footer />
-    </div>
-  )
-}
-
-export default App
