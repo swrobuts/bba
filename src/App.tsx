@@ -54,6 +54,7 @@ export default function App() {
         <SemesterFahrplan />
         <Berufswelt />
         <PasstDu />
+        <Vorteile />
         <Wuerzburg />
         <CTA />
         <Footer />
@@ -975,6 +976,102 @@ function PasstDu() {
 
 
 /* ═══════════════════════════════════════════════════════════════
+   VORTEILE — Warum BBA an der THWS + StudyCheck
+   ═══════════════════════════════════════════════════════════════ */
+
+function Vorteile() {
+  const vorteile = [
+    { icon: '👥', value: '~30', label: 'Studierende pro Jahrgang', desc: 'Klein und persönlich — du bist keine Matrikelnummer.' },
+    { icon: '🎯', value: '3 in 1', label: 'BWL + IT + Analytik', desc: 'Einzigartige Kombination, die auf dem Arbeitsmarkt gefragt ist.' },
+    { icon: '💼', value: 'Sem. 5', label: 'Praxissemester', desc: 'Ein ganzes Semester im Unternehmen — echter Berufseinblick.' },
+    { icon: '🚀', value: '+25%', label: 'Marktwachstum/Jahr', desc: 'Data Analytics ist einer der am schnellsten wachsenden Bereiche.' },
+    { icon: '🎓', value: 'B.Sc.', label: 'Bachelor of Science', desc: 'International anerkannter Abschluss in 7 Semestern.' },
+    { icon: '💶', value: 'Kein', label: 'Studiengebühren', desc: 'Nur der Semesterbeitrag (~150 €) inkl. Semesterticket.' },
+  ]
+
+  const ratings = [
+    { label: 'Studieninhalte', value: 4.2 },
+    { label: 'Dozenten', value: 4.0 },
+    { label: 'Lehrveranstaltungen', value: 4.0 },
+    { label: 'Digitales Studieren', value: 4.2 },
+    { label: 'Literaturzugang', value: 4.3 },
+    { label: 'Organisation', value: 3.8 },
+  ]
+
+  return (
+    <section className="py-28 lg:py-36" style={{ background: '#1A1A2E' }}>
+      <div className="max-w-7xl mx-auto px-8 lg:px-16">
+        <Reveal>
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Auf einen Blick</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white" style={{ fontFamily: 'Space Grotesk' }}>
+            Warum BBA an der THWS?
+          </h2>
+          <p className="text-xl text-neutral-400 max-w-3xl mb-16 leading-relaxed">
+            Kleine Kurse, starke Inhalte, echte Praxis — und das bestätigen auch die Studierenden.
+          </p>
+        </Reveal>
+
+        {/* Vorteile Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 mb-16">
+          {vorteile.map((v, i) => (
+            <Reveal key={i} delay={i < 6 ? `stagger-${i + 1}` : ''}>
+              <div className="p-8 lg:p-10 bg-[#1e1e3e] h-full">
+                <div className="text-4xl mb-4">{v.icon}</div>
+                <div className="flex items-baseline gap-3 mb-2">
+                  <span className="text-3xl lg:text-4xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>{v.value}</span>
+                  <span className="text-base text-[#E87722] font-semibold">{v.label}</span>
+                </div>
+                <p className="text-base text-neutral-400 leading-relaxed">{v.desc}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* StudyCheck Bewertung */}
+        <Reveal>
+          <div className="bg-[#1e1e3e] p-10 lg:p-12">
+            <div className="flex flex-wrap items-center gap-8 mb-10">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-2">StudyCheck.de</p>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-5xl lg:text-6xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>4.0</span>
+                  <span className="text-2xl text-neutral-500">/ 5</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-lg text-[#E87722] font-semibold">83% Weiterempfehlung</p>
+                <p className="text-base text-neutral-500">Basierend auf 6 Bewertungen</p>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {ratings.map((r, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm text-neutral-400">{r.label}</span>
+                      <span className="text-sm font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>{r.value}</span>
+                    </div>
+                    <div className="h-2 bg-white/5 overflow-hidden">
+                      <div className="h-full bg-[#E87722] transition-all duration-1000" style={{ width: `${(r.value / 5) * 100}%` }} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-8 text-sm text-neutral-600">
+              Quelle: <a href="https://www.studycheck.de/studium/business-information-management/thws-27180/bewertungen" target="_blank" rel="noopener noreferrer" className="text-[#E87722] hover:underline">studycheck.de</a> (Stand 2025)
+            </p>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
    WÜRZBURG
    ═══════════════════════════════════════════════════════════════ */
 
@@ -999,7 +1096,7 @@ function Wuerzburg() {
                 Die Lebenshaltungskosten liegen deutlich unter München oder Frankfurt. WG-Zimmer ab ca. 400 €, günstiges Mensaessen, Semesterticket für ganz Unterfranken inklusive.
               </p>
               <p>
-                Die THWS (Technische Hochschule Würzburg-Schweinfurt) ist bekannt für praxisnahe Lehre mit direktem Kontakt zu Professoren und kleinen Kursgrößen — kein anonymer Massenbetrieb.
+                Die THWS (Technische Hochschule Würzburg-Schweinfurt) ist bekannt für praxisnahe Lehre. Im BBA studieren nur rund 30 Studierende pro Jahrgang — du kennst deine Kommilitonen und deine Profs persönlich. Kein anonymer Massenbetrieb, sondern echte Zusammenarbeit.
               </p>
               <p>
                 Die Region ist wirtschaftlich stark: Unternehmen wie s.Oliver, Brose, Koenig & Bauer und zahlreiche IT-Dienstleister bieten Praktikums- und Einstiegsmöglichkeiten direkt vor Ort.
@@ -1045,7 +1142,7 @@ function CTA() {
             Klingt nach dir?
           </h2>
           <p className="text-xl text-neutral-500 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Bewerbungszeitraum: 1. Mai bis 15. Juli. Zulassungsfrei — kein NC.
+            Bewerbungszeitraum: 1. Mai bis 15. Juli. Bisher kein NC.
           </p>
         </Reveal>
 
@@ -1080,7 +1177,7 @@ function CTA() {
             Jetzt bewerben
           </a>
           <p className="mt-6 text-base text-neutral-400">
-            Fragen? Schreib an <a href="mailto:bba.fwiwi@thws.de" className="text-[#E87722] hover:underline">bba.fwiwi@thws.de</a>
+            Fragen? Schreib an <a href="mailto:robert.butscher@thws.de" className="text-[#E87722] hover:underline">robert.butscher@thws.de</a>
           </p>
         </Reveal>
       </div>
