@@ -368,7 +368,7 @@ function Fallstudie() {
         {showData && (
           <Reveal>
             <div className="mt-16 pt-12 border-t border-neutral-800">
-              <p className="text-white text-lg font-medium mb-8" style={SG}>Jede dieser Methoden lernst du im BBA:</p>
+              <p className="text-white text-lg font-medium mb-8" style={SG}>Eine Auswahl der Methoden &amp; Inhalte, die du im BBA lernst:</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-6">
                 {[
                   ['Clusteranalyse', 'Statistik f. Data Science', 'Sem. 4'],
@@ -383,6 +383,10 @@ function Fallstudie() {
                   ['Marktmechanismen', 'Makroökonomik', 'Sem. 2'],
                   ['Verantwortung & KI', 'Wiss. Arbeiten & Ethik', 'Sem. 2'],
                   ['Projektsteuerung', 'Projekt- & IT-Management', 'Sem. 1'],
+                  ['Process Mining', 'Vertiefung Bus. Analytics', 'Sem. 6'],
+                  ['Prozessautomatisierung', 'Vertiefung Bus. Analytics', 'Sem. 6'],
+                  ['ERP-Systeme', 'Wirtschaftsinformatik', 'Sem. 2'],
+                  ['Konjunkturanalyse', 'Makroökonomik', 'Sem. 2'],
                 ].map(([s, modul, sem], i) => (
                   <div key={i}>
                     <p style={{ color: ORANGE }} className="text-sm font-medium">{s}</p>
@@ -409,13 +413,8 @@ function DemingQuote() {
           <div className="flex flex-col sm:flex-row items-center gap-10 sm:gap-16">
             {/* Portrait — LinkedIn style: round, grayscale, subtle border */}
             <div className="flex-shrink-0">
-              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-neutral-200" style={{ background: '#f5f5f5' }}>
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/W._Edwards_Deming_%28cropped%29.jpg/440px-W._Edwards_Deming_%28cropped%29.jpg"
-                  alt="W. Edwards Deming"
-                  className="w-full h-full object-cover grayscale"
-                  loading="lazy"
-                />
+              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-neutral-200 flex items-center justify-center" style={{ background: '#e5e5e5' }}>
+                <span className="text-3xl sm:text-4xl font-bold text-neutral-400" style={SG}>WED</span>
               </div>
             </div>
             <div className="text-center sm:text-left">
@@ -434,26 +433,32 @@ function DemingQuote() {
 }
 
 
-/* ─── MODUL-NETZWERK — Spring Embedder ─── */
+/* ─── MODUL-NETZWERK — Static SVG ─── */
 function WasDuLernst() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const animRef = useRef(0)
+  /* 5 categories: BWL, Technologie, Analytik, VWL, Überfachlich */
+  const catColors: Record<string, string> = {
+    b: ORANGE, t: '#333', a: '#6366f1', v: '#059669', u: '#94a3b8'
+  }
+  const catLabels: [string, string][] = [
+    ['b', 'BWL'], ['t', 'Technologie'], ['a', 'Analytik'], ['v', 'VWL'], ['u', 'Überfachlich']
+  ]
 
-  const moduleDefs = [
-    { id: 'bwl', label: 'BWL', cat: 'w' },
-    { id: 'mktg', label: 'Marketing', cat: 'w' },
-    { id: 'ctrl', label: 'Controlling', cat: 'w' },
-    { id: 'mafo', label: 'Marktforschung', cat: 'w' },
-    { id: 'dioek', label: 'Dig. Ökonomie', cat: 'w' },
-    { id: 'stat', label: 'Statistik', cat: 't' },
+  const mods = [
+    { id: 'bwl', label: 'BWL', cat: 'b' },
+    { id: 'mktg', label: 'Marketing', cat: 'b' },
+    { id: 'ctrl', label: 'Controlling', cat: 'b' },
+    { id: 'mafo', label: 'Marktforschung', cat: 'b' },
+    { id: 'dioek', label: 'Dig. Ökonomie', cat: 'b' },
     { id: 'prog', label: 'Programmieren', cat: 't' },
     { id: 'bint', label: 'Business Intelligence', cat: 't' },
-    { id: 'oeko', label: 'Ökonometrie', cat: 't' },
     { id: 'dav', label: 'DAV', cat: 't' },
-    { id: 'ds', label: 'Data Science', cat: 't' },
     { id: 'db', label: 'Datenbanken', cat: 't' },
+    { id: 'ds', label: 'Data Science', cat: 't' },
+    { id: 'stat', label: 'Statistik', cat: 'a' },
+    { id: 'oeko', label: 'Ökonometrie', cat: 'a' },
+    { id: 'or', label: 'Operations Research', cat: 'a' },
+    { id: 'mikro', label: 'Mikroökonomik', cat: 'v' },
+    { id: 'makro', label: 'Makroökonomik', cat: 'v' },
     { id: 'recht', label: 'Recht', cat: 'u' },
     { id: 'pm', label: 'Projektmgmt.', cat: 'u' },
     { id: 'ethik', label: 'Ethik', cat: 'u' },
@@ -461,189 +466,70 @@ function WasDuLernst() {
   ]
 
   const edges: [string, string][] = [
-    ['bwl', 'stat'], ['bwl', 'prog'], ['mktg', 'mafo'], ['mktg', 'bint'], ['mktg', 'stat'],
+    ['bwl', 'stat'], ['bwl', 'ctrl'], ['mktg', 'mafo'], ['mktg', 'bint'], ['mktg', 'stat'],
     ['ctrl', 'bint'], ['ctrl', 'oeko'], ['mafo', 'stat'], ['mafo', 'oeko'], ['mafo', 'dav'],
-    ['stat', 'prog'], ['stat', 'oeko'], ['stat', 'ds'], ['prog', 'dav'], ['prog', 'db'],
+    ['stat', 'prog'], ['stat', 'oeko'], ['stat', 'ds'], ['stat', 'or'], ['prog', 'dav'], ['prog', 'db'],
     ['prog', 'ds'], ['bint', 'db'], ['bint', 'ds'], ['bint', 'dav'], ['oeko', 'ds'],
-    ['oeko', 'dav'], ['dav', 'ds'], ['recht', 'ethik'], ['recht', 'dioek'], ['pm', 'bint'],
-    ['pm', 'ctrl'], ['ethik', 'ds'], ['ethik', 'dioek'], ['wiss', 'stat'], ['wiss', 'oeko'],
-    ['dioek', 'mktg'], ['dioek', 'bint'],
+    ['oeko', 'dav'], ['oeko', 'or'], ['dav', 'ds'], ['recht', 'ethik'], ['recht', 'dioek'],
+    ['pm', 'bint'], ['pm', 'ctrl'], ['ethik', 'ds'], ['ethik', 'dioek'], ['wiss', 'stat'],
+    ['wiss', 'oeko'], ['dioek', 'mktg'], ['dioek', 'bint'], ['mikro', 'makro'], ['mikro', 'mafo'],
+    ['makro', 'oeko'], ['makro', 'ctrl'], ['or', 'prog'],
   ]
 
-  const catColors: Record<string, string> = { w: ORANGE, t: '#555', u: '#999' }
-
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setIsVisible(true) }, { threshold: 0.1 })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!isVisible || !canvasRef.current) return
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const N = moduleDefs.length
+  /* Pre-compute force layout once (deterministic, no animation) */
+  const positions = useMemo(() => {
+    const N = mods.length
     const idIdx: Record<string, number> = {}
-    moduleDefs.forEach((m, i) => { idIdx[m.id] = i })
-
-    /* ─── Spring Embedder State ─── */
-    // Seed positions: cluster by category with some spread
-    const catCenters: Record<string, [number, number]> = { w: [0.22, 0.5], t: [0.5, 0.5], u: [0.78, 0.5] }
-    const px = new Float64Array(N)
-    const py = new Float64Array(N)
-    const vx = new Float64Array(N)
-    const vy = new Float64Array(N)
-    // Deterministic seed
-    let seed = 42
-    const rand = () => { seed = (seed * 16807 + 0) % 2147483647; return seed / 2147483647 }
-    moduleDefs.forEach((m, i) => {
-      const c = catCenters[m.cat]
-      px[i] = c[0] + (rand() - 0.5) * 0.25
-      py[i] = c[1] + (rand() - 0.5) * 0.4
-    })
-
+    mods.forEach((m, i) => { idIdx[m.id] = i })
     const edgeIdx = edges.map(([a, b]) => [idIdx[a], idIdx[b]] as [number, number])
 
-    /* Physics constants — tuned for readable spread */
-    const REPULSION = 0.0008
-    const SPRING_K = 0.015
-    const SPRING_LEN = 0.14
-    const DAMPING = 0.88
-    const GRAVITY = 0.0003
-    const PAD = 0.08
+    const catCenters: Record<string, [number, number]> = {
+      b: [0.15, 0.35], t: [0.5, 0.65], a: [0.5, 0.25], v: [0.15, 0.7], u: [0.85, 0.5]
+    }
+    const px = new Float64Array(N), py = new Float64Array(N)
+    const vx = new Float64Array(N), vy = new Float64Array(N)
+    let seed = 42
+    const rand = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647 }
+    mods.forEach((m, i) => {
+      const c = catCenters[m.cat]
+      px[i] = c[0] + (rand() - 0.5) * 0.2
+      py[i] = c[1] + (rand() - 0.5) * 0.25
+    })
 
-    let simSteps = 0
-    const SIM_WARMUP = 200  // run physics silently before first paint
-    const SIM_ACTIVE = 600  // total physics steps
-
-    /* Run warmup synchronously (no paint) */
-    const step = () => {
+    const REPULSION = 0.001, SPRING_K = 0.012, SPRING_LEN = 0.13, DAMPING = 0.85, GRAVITY = 0.0004, PAD = 0.1
+    for (let iter = 0; iter < 800; iter++) {
       for (let i = 0; i < N; i++) {
         let fx = 0, fy = 0
-        // Repulsion from all other nodes
         for (let j = 0; j < N; j++) {
           if (i === j) continue
           let dx = px[i] - px[j], dy = py[i] - py[j]
           let dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < 0.001) { dist = 0.001; dx = (rand() - 0.5) * 0.01; dy = (rand() - 0.5) * 0.01 }
-          const f = REPULSION / (dist * dist)
-          fx += (dx / dist) * f
-          fy += (dy / dist) * f
+          fx += (dx / dist) * REPULSION / (dist * dist)
+          fy += (dy / dist) * REPULSION / (dist * dist)
         }
-        // Spring attraction along edges
         for (const [a, b] of edgeIdx) {
           const other = a === i ? b : b === i ? a : -1
           if (other < 0) continue
           const dx = px[other] - px[i], dy = py[other] - py[i]
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < 0.001) continue
-          const displacement = dist - SPRING_LEN
-          const f = SPRING_K * displacement
-          fx += (dx / dist) * f
-          fy += (dy / dist) * f
+          const f = SPRING_K * (dist - SPRING_LEN)
+          fx += (dx / dist) * f; fy += (dy / dist) * f
         }
-        // Gravity toward center
-        fx += (0.5 - px[i]) * GRAVITY
-        fy += (0.5 - py[i]) * GRAVITY
-        vx[i] = (vx[i] + fx) * DAMPING
-        vy[i] = (vy[i] + fy) * DAMPING
+        fx += (0.5 - px[i]) * GRAVITY; fy += (0.5 - py[i]) * GRAVITY
+        vx[i] = (vx[i] + fx) * DAMPING; vy[i] = (vy[i] + fy) * DAMPING
       }
       for (let i = 0; i < N; i++) {
         px[i] = Math.max(PAD, Math.min(1 - PAD, px[i] + vx[i]))
         py[i] = Math.max(PAD, Math.min(1 - PAD, py[i] + vy[i]))
       }
-      simSteps++
     }
+    return mods.map((_, i) => ({ x: px[i], y: py[i] }))
+  }, [])
 
-    // Silent warmup
-    for (let i = 0; i < SIM_WARMUP; i++) step()
-
-    /* Intro animation */
-    let frame = 0
-    const introFrames = 90
-    const phases = moduleDefs.map(() => rand() * Math.PI * 2)
-
-    const draw = () => {
-      // Continue physics if not converged
-      if (simSteps < SIM_ACTIVE) step()
-
-      const rect = canvas.getBoundingClientRect()
-      const dpr = window.devicePixelRatio || 1
-      canvas.width = rect.width * dpr
-      canvas.height = rect.height * dpr
-      ctx.scale(dpr, dpr)
-      const W = rect.width, H = rect.height
-      ctx.clearRect(0, 0, W, H)
-
-      const t = Math.min(frame / introFrames, 1)
-      const ease = 1 - Math.pow(1 - t, 3)
-
-      /* ─── Draw edges ─── */
-      const ep = Math.min(t * 1.8, 1)
-      edgeIdx.forEach(([fi, ti], idx) => {
-        const p = Math.max(0, Math.min((ep - idx * 0.012) * 2.5, 1))
-        if (p <= 0) return
-        const x1 = px[fi] * W, y1 = py[fi] * H
-        const x2 = px[ti] * W, y2 = py[ti] * H
-        const cross = moduleDefs[fi].cat !== moduleDefs[ti].cat
-        ctx.strokeStyle = cross
-          ? `rgba(232,119,34,${0.2 * p})`
-          : `rgba(0,0,0,${0.08 * p})`
-        ctx.lineWidth = cross ? 1.5 : 0.8
-        ctx.beginPath()
-        ctx.moveTo(x1, y1)
-        if (p < 1) {
-          ctx.lineTo(x1 + (x2 - x1) * p, y1 + (y2 - y1) * p)
-        } else {
-          ctx.lineTo(x2, y2)
-        }
-        ctx.stroke()
-      })
-
-      /* ─── Draw nodes ─── */
-      const isMobile = W < 500
-      const nodeR = isMobile ? Math.max(5, W * 0.018) : Math.max(7, W * 0.012)
-      const fontSize = isMobile ? Math.max(10, W * 0.028) : Math.max(12, W * 0.014)
-
-      moduleDefs.forEach((m, i) => {
-        const d = i * 0.025
-        const np = Math.max(0, Math.min((ease - d) * 1.8, 1))
-        if (np <= 0) return
-
-        const cx = px[i] * W, cy = py[i] * H
-        const breathe = t >= 1 ? 1 + 0.05 * Math.sin(frame * 0.02 + phases[i]) : 1
-        const r = nodeR * np * breathe
-
-        // Glow
-        ctx.beginPath(); ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2)
-        ctx.fillStyle = m.cat === 'w'
-          ? `rgba(232,119,34,${0.08 * np})`
-          : m.cat === 't' ? `rgba(80,80,80,${0.05 * np})` : `rgba(150,150,150,${0.04 * np})`
-        ctx.fill()
-
-        // Node
-        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2)
-        ctx.fillStyle = catColors[m.cat]
-        ctx.globalAlpha = np; ctx.fill(); ctx.globalAlpha = 1
-
-        // Label
-        ctx.font = `600 ${fontSize}px 'Space Grotesk', system-ui`
-        ctx.fillStyle = `rgba(17,17,17,${np * 0.8})`
-        ctx.textAlign = 'center'
-        ctx.textBaseline = 'bottom'
-        ctx.fillText(m.label, cx, cy - r - 4)
-      })
-
-      frame++
-      animRef.current = requestAnimationFrame(draw)
-    }
-    draw()
-    return () => cancelAnimationFrame(animRef.current)
-  }, [isVisible])
+  const idIdx: Record<string, number> = {}
+  mods.forEach((m, i) => { idIdx[m.id] = i })
 
   return (
     <section id="studium" className="py-28 lg:py-40 bg-white">
@@ -651,24 +537,54 @@ function WasDuLernst() {
         <Reveal>
           <p className="text-sm font-medium tracking-[0.2em] uppercase mb-6" style={{ color: ORANGE }}>Das Studium</p>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4" style={{ ...SG, color: INK }}>
-            Drei Welten. Ein Studium.
+            Fünf Welten. Ein Studium.
           </h2>
           <p className="text-lg text-neutral-400 max-w-2xl mb-12">
-            Business Analytics verbindet Wirtschaftswissen, Technologie und methodische Kompetenz. Jedes Modul baut auf anderen auf.
+            Business Analytics verbindet BWL, Technologie, Analytik, VWL und überfachliche Kompetenz. Jedes Modul baut auf anderen auf.
           </p>
         </Reveal>
 
         <Reveal>
-          <div className="flex flex-wrap gap-x-8 gap-y-2 mb-10 text-sm text-neutral-400">
-            <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full" style={{ background: ORANGE }} /> Wirtschaft</span>
-            <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-neutral-500" /> Technologie</span>
-            <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-neutral-300" /> Überfachlich</span>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 mb-10 text-sm text-neutral-500">
+            {catLabels.map(([key, label]) => (
+              <span key={key} className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ background: catColors[key] }} /> {label}
+              </span>
+            ))}
           </div>
         </Reveal>
 
-        <div ref={containerRef} className="relative w-full" style={{ aspectRatio: '4/3' }}>
-          <canvas ref={canvasRef} className="w-full h-full" />
-        </div>
+        <Reveal>
+          <svg viewBox="0 0 1000 750" className="w-full h-auto" style={{ maxHeight: '70vh' }}>
+            {/* Edges */}
+            {edges.map(([a, b], i) => {
+              const ai = idIdx[a], bi = idIdx[b]
+              const cross = mods[ai].cat !== mods[bi].cat
+              return (
+                <line key={i}
+                  x1={positions[ai].x * 1000} y1={positions[ai].y * 750}
+                  x2={positions[bi].x * 1000} y2={positions[bi].y * 750}
+                  stroke={cross ? ORANGE : '#d4d4d4'}
+                  strokeWidth={cross ? 1.5 : 1}
+                  opacity={cross ? 0.3 : 0.5}
+                />
+              )
+            })}
+            {/* Nodes */}
+            {mods.map((m, i) => {
+              const cx = positions[i].x * 1000, cy = positions[i].y * 750
+              return (
+                <g key={m.id}>
+                  <circle cx={cx} cy={cy} r={18} fill={catColors[m.cat]} opacity={0.15} />
+                  <circle cx={cx} cy={cy} r={9} fill={catColors[m.cat]} />
+                  <text x={cx} y={cy - 16} textAnchor="middle" fill={INK}
+                    fontSize="13" fontWeight="600" fontFamily="'Space Grotesk', system-ui"
+                  >{m.label}</text>
+                </g>
+              )
+            })}
+          </svg>
+        </Reveal>
       </div>
     </section>
   )
@@ -677,14 +593,16 @@ function WasDuLernst() {
 
 /* ─── FAHRPLAN — Animierte Scroll-Timeline ─── */
 function SemesterFahrplan() {
+  /* Color-coded items: [label, category] — b=BWL, t=Tech, a=Analytik, v=VWL, u=Überfachlich, p=Praxis */
+  const catCol: Record<string, string> = { b: ORANGE, t: '#333', a: '#6366f1', v: '#059669', u: '#94a3b8', p: '#78716c' }
   const semesters = [
-    { nr: 1, title: 'Grundlagen', skill: 'Du verstehst die Sprache der Wirtschaft und Technik.', items: ['Allgemeine BWL', 'Mathematik 1', 'Mikroökonomik', 'Wirtschaftsinformatik', 'Projekt- & IT-Management', 'Recht & Datenschutz'] },
-    { nr: 2, title: 'Methoden', skill: 'Du kannst Daten erheben, programmieren und statistisch auswerten.', items: ['Mathematik 2', 'Grundlagen der Statistik', 'Informatik & Programmieren', 'Makroökonomik', 'Marketing', 'Wiss. Arbeiten & Ethik'] },
-    { nr: 3, title: 'Analytics', skill: 'Du beherrschst die Werkzeuge der Datenanalyse.', items: ['Operations Research', 'Ökonometrie', 'Datenbanken', 'Business Intelligence', 'Beschaffung & Logistik', 'Business English'] },
-    { nr: 4, title: 'Vertiefung', skill: 'Du wendest Analytics auf echte Geschäftsfragen an.', items: ['Statistik für Data Science', 'Datenaufbereitung (DAV)', 'Markt- & Konsumforschung', 'Digitale Ökonomie', 'Controlling', 'Wahlpflichtmodul'] },
-    { nr: 5, title: 'Praxis', skill: 'Du arbeitest selbstständig mit Daten im Unternehmen.', items: ['Fachpraktikum im Unternehmen', 'Praxisseminar', 'Eigenes Datenprojekt'] },
-    { nr: 6, title: 'Spezialisierung', skill: 'Du entwickelst Expertise in deinem Schwerpunkt.', items: ['Vertiefung Business Analytics', 'Projekt Business Analytics 1', 'Schwerpunkt BWL', 'AWPM'] },
-    { nr: 7, title: 'Abschluss', skill: 'Du löst eigenständig komplexe Analytics-Projekte.', items: ['Projekt Business Analytics 2', 'Schwerpunkt BWL', 'Bachelorarbeit & Seminar'] },
+    { nr: 1, title: 'Grundlagen', skill: 'Du verstehst die Sprache der Wirtschaft und Technik.', items: [['Allgemeine BWL','b'], ['Mathematik 1','a'], ['Mikroökonomik','v'], ['Wirtschaftsinformatik','t'], ['Projekt- & IT-Management','u'], ['Recht & Datenschutz','u']] as [string,string][] },
+    { nr: 2, title: 'Methoden', skill: 'Du kannst Daten erheben, programmieren und statistisch auswerten.', items: [['Mathematik 2','a'], ['Grundlagen der Statistik','a'], ['Informatik & Programmieren','t'], ['Makroökonomik','v'], ['Marketing','b'], ['Wiss. Arbeiten & Ethik','u']] as [string,string][] },
+    { nr: 3, title: 'Analytics', skill: 'Du beherrschst die Werkzeuge der Datenanalyse.', items: [['Operations Research','a'], ['Ökonometrie','a'], ['Datenbanken','t'], ['Business Intelligence','t'], ['Beschaffung & Logistik','b'], ['Business English','u']] as [string,string][] },
+    { nr: 4, title: 'Vertiefung', skill: 'Du wendest Analytics auf echte Geschäftsfragen an.', items: [['Statistik für Data Science','a'], ['Datenaufbereitung (DAV)','t'], ['Markt- & Konsumforschung','b'], ['Digitale Ökonomie','b'], ['Controlling','b'], ['Wahlpflichtmodul','u']] as [string,string][] },
+    { nr: 5, title: 'Praxissemester', skill: 'Du arbeitest selbstständig mit Daten im Unternehmen.', items: [['Fachpraktikum im Unternehmen','p'], ['Praxisseminar','p'], ['Eigenes Datenprojekt','p']] as [string,string][] },
+    { nr: 6, title: 'Spezialisierung', skill: 'Du entwickelst Expertise in deinem Schwerpunkt.', items: [['Vertiefung Business Analytics','a'], ['Projekt Business Analytics 1','t'], ['Schwerpunkt BWL','b'], ['AWPM','u']] as [string,string][] },
+    { nr: 7, title: 'Abschluss', skill: 'Du löst eigenständig komplexe Analytics-Projekte.', items: [['Projekt Business Analytics 2','t'], ['Schwerpunkt BWL','b'], ['Bachelorarbeit & Seminar','u']] as [string,string][] },
   ]
 
   return (
@@ -721,9 +639,11 @@ function SemesterFahrplan() {
                     <h3 className="text-2xl sm:text-3xl font-bold mb-2" style={{ ...SG, color: INK }}>{sem.title}</h3>
                     <p className="text-neutral-400 mb-6 text-sm">{sem.skill}</p>
 
-                    <div className="flex flex-wrap gap-x-6 gap-y-2">
-                      {sem.items.map((item, j) => (
-                        <span key={j} className="text-sm text-neutral-600">{item}</span>
+                    <div className="flex flex-wrap gap-2">
+                      {sem.items.map(([label, cat], j) => (
+                        <span key={j} className="text-xs sm:text-sm px-2.5 py-1 rounded-full font-medium"
+                          style={{ color: catCol[cat], background: catCol[cat] + '12', border: `1px solid ${catCol[cat]}30` }}
+                        >{label}</span>
                       ))}
                     </div>
                   </div>
@@ -808,7 +728,7 @@ function Berufswelt() {
             {profiles.map((p, i) => (
               <Reveal key={i} delay={i < 6 ? `stagger-${Math.min(i + 1, 4)}` : ''}>
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase text-neutral-300 mb-2">{p.ctx}</p>
+                  <p className="text-xs tracking-[0.15em] uppercase text-neutral-500 mb-2">{p.ctx}</p>
                   <h3 className="text-xl font-bold mb-2" style={{ ...SG, color: INK }}>{p.title}</h3>
                   <p className="text-sm text-neutral-500 leading-relaxed">{p.desc}</p>
                 </div>
@@ -919,7 +839,6 @@ function Vorteile() {
     ['Sem. 5', 'Praxissemester im Unternehmen'],
     ['Top 10', 'Gefragteste Skills laut LinkedIn'],
     ['B.Sc.', 'Bachelor of Science'],
-    ['Keine', 'Studiengebühren'],
   ]
 
   return (
