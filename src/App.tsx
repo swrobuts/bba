@@ -639,7 +639,7 @@ function SemesterFahrplan() {
                     <div className="flex flex-wrap gap-2.5">
                       {sem.items.map(([label, cat], j) => (
                         <span key={j} className="text-sm sm:text-base px-3 py-1.5 rounded-full font-medium"
-                          style={{ color: catCol[cat], background: catCol[cat] + '18', border: `1.5px solid ${catCol[cat]}40` }}
+                          style={{ color: catCol[cat], background: catCol[cat] + '15', border: `2px solid ${catCol[cat]}80` }}
                         >{label}</span>
                       ))}
                     </div>
