@@ -59,7 +59,16 @@ export default function App() {
       <Nav visible={gateOpen} />
       <Hero />
       <Weiche onChooseBBA={openGate} gateOpen={gateOpen} />
-      <div ref={weicheEndRef} className="h-1" aria-hidden />
+      {/* Scroll-trigger zone: gives enough room to scroll past Weiche on mobile */}
+      {!gateOpen && (
+        <div ref={weicheEndRef} className="flex flex-col items-center justify-center py-20 text-neutral-300">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce mb-3 opacity-40">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+          <p className="text-xs tracking-wide opacity-40">Weiter scrollen</p>
+        </div>
+      )}
+      {gateOpen && <div ref={weicheEndRef} />}
       <div
         ref={contentRef}
         className={`transition-all duration-1000 ${gateOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16 pointer-events-none max-h-0 overflow-hidden'}`}
