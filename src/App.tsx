@@ -53,6 +53,7 @@ export default function App() {
         <WasDuLernst />
         <SemesterFahrplan />
         <Berufswelt />
+        <PasstDu />
         <Wuerzburg />
         <CTA />
         <Footer />
@@ -188,19 +189,19 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
       id: 'bauch',
       title: 'Bauchgefühl',
       desc: 'Erfahrung und Intuition reichen.',
-      fail: 'In 60% der Fälle daneben. Besonders bei komplexen Entscheidungen ist Intuition systematisch verzerrt — das zeigt die Forschung seit Kahneman & Tversky.',
+      fail: 'Unser Gehirn täuscht uns häufiger, als wir denken. Wir überschätzen, was wir kennen, und übersehen, was wir nicht wissen. Bei Millionen-Entscheidungen reicht das nicht.',
     },
     {
       id: 'raten',
       title: 'Einfach raten',
       desc: 'Wird schon irgendwie passen.',
-      fail: 'Zufallstreffer sind kein Geschäftsmodell. Unternehmen, die raten, verschwinden. 70% aller Startups scheitern — oft an falschen Annahmen.',
+      fail: 'Zufallstreffer sind kein Geschäftsmodell. 70% aller Startups scheitern — meistens nicht am Produkt, sondern an falschen Annahmen über Kunden und Markt.',
     },
     {
       id: 'chef',
       title: 'Der Chef entscheidet',
       desc: 'Wer am längsten da ist, weiß es am besten.',
-      fail: 'Hierarchie ersetzt keine Analyse. Die Erfahrung von gestern kann in dynamischen Märkten morgen wertlos sein.',
+      fail: 'Was gestern funktioniert hat, kann morgen schon falsch sein. Märkte verändern sich schnell — Erfahrung allein reicht nicht, wenn sich die Spielregeln ändern.',
     },
   ]
 
@@ -395,14 +396,14 @@ function Fallstudie() {
           <Reveal>
             <div className="mt-px p-10 lg:p-12 bg-[#E87722]/5" style={{ borderLeft: '3px solid #E87722' }}>
               <p className="text-lg text-white mb-6" style={{ fontFamily: 'Space Grotesk' }}>
-                <strong>Jeder Schritt von Team Analytics basiert auf Methoden aus dem BBA-Studium:</strong>
+                <strong>Klingt kompliziert? Muss es nicht sein. Jeder dieser Schritte basiert auf Methoden, die du im BBA-Studium lernst:</strong>
               </p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-base">
                 {[
-                  { skill: 'Clusteranalyse', modul: 'Statistik & Data Science', sem: 'Semester 3–4' },
+                  { skill: 'Clusteranalyse', modul: 'Statistik für Data Science', sem: 'Semester 4' },
                   { skill: 'Geo-Datenanalyse', modul: 'Business Intelligence', sem: 'Semester 3' },
-                  { skill: 'Zeitreihenanalyse', modul: 'Ökonometrie', sem: 'Semester 4' },
-                  { skill: 'Conjoint-Analyse', modul: 'Marktforschung', sem: 'Semester 4' },
+                  { skill: 'Zeitreihenanalyse', modul: 'Ökonometrie', sem: 'Semester 3' },
+                  { skill: 'Conjoint-Analyse', modul: 'Markt- & Konsumforschung', sem: 'Semester 4' },
                 ].map((m, i) => (
                   <div key={i}>
                     <p className="text-[#E87722] font-semibold text-lg">{m.skill}</p>
@@ -461,7 +462,7 @@ function WasDuLernst() {
     { id: 'prog', label: 'Programmieren', x: 0.55, y: 0.35, cat: 't' },
     { id: 'bint', label: 'Business Intelligence', x: 0.42, y: 0.55, cat: 't' },
     { id: 'oeko', label: 'Ökonometrie', x: 0.58, y: 0.72, cat: 't' },
-    { id: 'dav', label: 'DAV (Python)', x: 0.50, y: 0.90, cat: 't' },
+    { id: 'dav', label: 'DAV', x: 0.50, y: 0.90, cat: 't' },
     { id: 'ds', label: 'Data Science', x: 0.65, y: 0.52, cat: 't' },
     { id: 'db', label: 'Datenbanken', x: 0.70, y: 0.30, cat: 't' },
     { id: 'recht', label: 'Recht', x: 0.88, y: 0.25, cat: 'u' },
@@ -627,37 +628,37 @@ function SemesterFahrplan() {
     {
       nr: 1, title: 'Grundlagen',
       color: '#E87722',
-      items: ['BWL & VWL', 'Mathematik & Statistik', 'Einführung Programmieren (R)', 'Wirtschaftsinformatik'],
+      items: ['Allgemeine BWL', 'Mathematik 1', 'Mikroökonomik', 'Wirtschaftsinformatik', 'Projekt- & IT-Management', 'Recht & Datenschutz'],
     },
     {
       nr: 2, title: 'Methoden',
       color: '#E87722',
-      items: ['Marketing & Marktforschung', 'Datenbanken (SQL)', 'Induktive Statistik', 'Rechnungswesen'],
+      items: ['Mathematik 2', 'Grundlagen der Statistik', 'Informatik & Programmieren', 'Makroökonomik', 'Marketing', 'Wiss. Arbeiten & Ethik'],
     },
     {
       nr: 3, title: 'Analytics',
       color: '#2563eb',
-      items: ['Business Intelligence', 'Programmieren II (Python)', 'Ökonometrie', 'Digitale Ökonomie'],
+      items: ['Operations Research', 'Ökonometrie', 'Datenbanken', 'Business Intelligence', 'Beschaffung & Logistik', 'Business English'],
     },
     {
       nr: 4, title: 'Vertiefung',
       color: '#2563eb',
-      items: ['Data Science & Machine Learning', 'DAV mit Python', 'Controlling', 'Projektmanagement'],
+      items: ['Statistik für Data Science', 'Datenaufbereitung (DAV)', 'Markt- & Konsumforschung', 'Digitale Ökonomie', 'Controlling', 'Wahlpflichtmodul'],
     },
     {
       nr: 5, title: 'Praxis',
       color: '#059669',
-      items: ['Praxissemester (20 Wochen)', 'Unternehmen oder Forschungsprojekt', 'Eigenes Datenprojekt'],
+      items: ['Fachpraktikum im Unternehmen', 'Praxisseminar', 'Eigenes Datenprojekt'],
     },
     {
       nr: 6, title: 'Spezialisierung',
       color: '#059669',
-      items: ['Wahlpflichtmodule', 'Seminar (Forschungsprojekt)', 'Bachelorarbeit'],
+      items: ['Vertiefung Business Analytics', 'Projekt Business Analytics 1', 'Schwerpunkt BWL', 'AWPM'],
     },
     {
       nr: 7, title: 'Abschluss',
       color: '#1A1A2E',
-      items: ['Bachelorarbeit fertigstellen', 'Optional: Auslandssemester', 'Berufseinstieg oder Master'],
+      items: ['Projekt Business Analytics 2', 'Schwerpunkt BWL', 'Bachelorarbeit & Seminar'],
     },
   ]
 
@@ -724,13 +725,13 @@ function SemesterFahrplan() {
 function MarketGrowthChart() {
   const data = [
     { year: '2022', value: 2.8 },
-    { year: '2023', value: 3.6 },
-    { year: '2024', value: 4.8 },
-    { year: '2025', value: 6.2 },
-    { year: '2027', value: 10.5 },
-    { year: '2030', value: 22.0 },
+    { year: '2023', value: 3.5 },
+    { year: '2024', value: 4.4 },
+    { year: '2025', value: 5.6 },
+    { year: '2027', value: 9.0 },
+    { year: '2030', value: 18.0 },
   ]
-  const max = 24
+  const max = 20
   return (
     <div className="space-y-3">
       {data.map((d, i) => (
@@ -746,10 +747,10 @@ function MarketGrowthChart() {
               }}
             />
           </div>
-          <span className="text-xs text-neutral-400 w-14 font-mono">{d.value} Mrd $</span>
+          <span className="text-xs text-neutral-400 w-14 font-mono">{d.value} Mrd €</span>
         </div>
       ))}
-      <p className="text-xs text-neutral-600 mt-1">Prognose ab 2025 (CAGR 26,7%)</p>
+      <p className="text-xs text-neutral-600 mt-1">Prognose ab 2025 (jährliches Wachstum ca. 25%)</p>
     </div>
   )
 }
@@ -763,12 +764,12 @@ function Berufswelt() {
   const [view, setView] = useState<'profile' | 'stellen' | 'ki'>('profile')
 
   const profiles = [
-    { title: 'Business Analyst', bereich: 'Unternehmensberatung', desc: 'Geschäftsprozesse analysieren, KPIs definieren, Dashboards bauen. Brücke zwischen Fachabteilung und IT.' },
-    { title: 'Data Analyst', bereich: 'Konzern / Mittelstand', desc: 'Große Datenmengen strukturieren, Muster erkennen, Handlungsempfehlungen ableiten.' },
-    { title: 'BI-Consultant', bereich: 'IT-Beratung', desc: 'Data Warehouses designen, ETL-Prozesse aufsetzen, Reporting-Systeme implementieren.' },
-    { title: 'Marketing Analyst', bereich: 'E-Commerce / Agentur', desc: 'Customer Journeys auswerten, A/B-Tests durchführen, Kampagnen-ROI berechnen.' },
-    { title: 'Controlling-Analyst', bereich: 'Finanzen', desc: 'Budgets modellieren, Forecasts erstellen, Abweichungsanalysen für die Geschäftsführung.' },
-    { title: 'Data Scientist', bereich: 'Tech / Startup', desc: 'Predictive Models bauen, Machine Learning einsetzen, aus Daten Produkte machen.' },
+    { title: 'Business Analyst', bereich: 'Unternehmensberatung', desc: 'Du analysierst, wie ein Unternehmen arbeitet, findest Schwachstellen und schlägst datenbasierte Verbesserungen vor. Du bist die Schnittstelle zwischen Technik und Management.' },
+    { title: 'Data Analyst', bereich: 'Konzern / Mittelstand', desc: 'Du wertest große Datenmengen aus, erkennst Muster und erklärst der Geschäftsführung, was die Zahlen bedeuten — und was zu tun ist.' },
+    { title: 'BI-Consultant', bereich: 'IT-Beratung', desc: 'Du baust die Systeme, mit denen Unternehmen ihre Daten sichtbar machen — von automatischen Reports bis zu interaktiven Dashboards.' },
+    { title: 'Marketing Analyst', bereich: 'E-Commerce / Agentur', desc: 'Du findest heraus, welche Werbung wirkt, welche Kunden kaufen und warum — und hilfst dem Marketing, bessere Entscheidungen zu treffen.' },
+    { title: 'Controlling-Analyst', bereich: 'Finanzen', desc: 'Du modellierst Budgets, erstellst Prognosen und zeigst dem Management, wo das Geld hinfließt — und wo es besser eingesetzt wäre.' },
+    { title: 'Data Scientist', bereich: 'Tech / Startup', desc: 'Du baust Algorithmen, die aus vergangenen Daten die Zukunft vorhersagen — zum Beispiel welche Produkte Kunden als nächstes kaufen werden.' },
   ]
 
   const stellen = [
@@ -779,7 +780,7 @@ function Berufswelt() {
     { firma: 'Deutsche Bank', titel: 'Risk Analyst', ort: 'Frankfurt', gehalt: '58–68k €', tags: ['R', 'SQL', 'Statistik'], link: 'https://careers.db.com/professionals/search-roles/' },
     { firma: 'CHECK24', titel: 'BI Analyst', ort: 'München', gehalt: '50–60k €', tags: ['Python', 'Tableau', 'ETL'], link: 'https://www.stepstone.de/jobs/data-analyst' },
     { firma: 'Bosch', titel: 'Data Scientist (Junior)', ort: 'Stuttgart', gehalt: '55–65k €', tags: ['Python', 'ML', 'Spark'], link: 'https://www.stepstone.de/jobs/data-scientist' },
-    { firma: 'Allianz', titel: 'Actuarial Data Analyst', ort: 'München', gehalt: '50–60k €', tags: ['R', 'SAS', 'Statistik'], link: 'https://www.datacareer.de/categories/dataanalytics/' },
+    { firma: 'Allianz', titel: 'Data Analyst Versicherung', ort: 'München', gehalt: '50–60k €', tags: ['R', 'SAS', 'Statistik'], link: 'https://www.datacareer.de/categories/dataanalytics/' },
     { firma: 'SAP', titel: 'Associate BI Consultant', ort: 'Walldorf', gehalt: '55–65k €', tags: ['SAP BW', 'SQL', 'HANA'], link: 'https://www.linkedin.com/jobs/business-analyst-jobs-germany/' },
   ]
 
@@ -792,7 +793,7 @@ function Berufswelt() {
             Was du damit machen kannst.
           </h2>
           <p className="text-xl text-neutral-400 max-w-3xl mb-12 leading-relaxed">
-            Business Analytics ist kein Nischenfach — es ist eine der gefragtesten Qualifikationen auf dem Arbeitsmarkt.
+            Mit einem BBA-Abschluss bist du nicht auf einen Job festgelegt — du kannst in völlig unterschiedlichen Branchen arbeiten.
           </p>
         </Reveal>
 
@@ -881,7 +882,7 @@ function Berufswelt() {
                 <h3 className="text-lg font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Data Analytics Markt Deutschland</h3>
                 <MarketGrowthChart />
                 <div className="space-y-4 text-sm text-neutral-500">
-                  <p>Quelle: Grand View Research, IMARC Group (2025)</p>
+                  <p>Quelle: Grand View Research, IMARC Group (2024/25)</p>
                   <div className="space-y-2">
                     <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
                       <span className="text-neutral-400">Offene Data-Analyst-Stellen (DE)</span>
@@ -893,7 +894,7 @@ function Berufswelt() {
                     </div>
                     <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
                       <span className="text-neutral-400">Jährliches Marktwachstum</span>
-                      <span className="text-[#E87722] font-bold text-base" style={{ fontFamily: 'Space Grotesk' }}>+26,7%</span>
+                      <span className="text-[#E87722] font-bold text-base" style={{ fontFamily: 'Space Grotesk' }}>+25% pro Jahr</span>
                     </div>
                   </div>
                 </div>
@@ -901,6 +902,72 @@ function Berufswelt() {
             </Reveal>
           </div>
         )}
+      </div>
+    </section>
+  )
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PASST DU ZU BBA? — Erwartungen, kein Nerd-Filter
+   ═══════════════════════════════════════════════════════════════ */
+
+function PasstDu() {
+  const passt = [
+    {
+      title: 'Neugier',
+      desc: 'Du fragst dich, warum Dinge so sind, wie sie sind. Wenn du eine Statistik siehst, willst du wissen, was dahintersteckt.',
+    },
+    {
+      title: 'Interesse an Wirtschaft',
+      desc: 'Du willst verstehen, wie Unternehmen funktionieren — nicht nur in der Theorie, sondern in der echten Welt. Warum ist Netflix erfolgreich? Warum scheitern andere?',
+    },
+    {
+      title: 'Spaß an Technologie',
+      desc: 'Du musst nicht programmieren können. Aber die Idee, mit einem Computer Probleme zu lösen, findest du spannender als abschreckend.',
+    },
+    {
+      title: 'Faible für Zahlen und Fakten',
+      desc: 'Du vertraust lieber Daten als Meinungen. Wenn jemand sagt „Das war schon immer so", willst du Belege sehen.',
+    },
+  ]
+
+  return (
+    <section className="py-28 lg:py-36 bg-[#FAFAF8]">
+      <div className="max-w-5xl mx-auto px-8 lg:px-16">
+        <Reveal>
+          <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Für wen ist das?</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+            Passt du zu BBA?
+          </h2>
+          <p className="text-xl text-neutral-500 max-w-3xl mb-16 leading-relaxed">
+            Du brauchst kein Mathe-Ass zu sein und musst keine Programmiersprache kennen. Was du mitbringen solltest, ist etwas anderes.
+          </p>
+        </Reveal>
+
+        <div className="grid sm:grid-cols-2 gap-8 lg:gap-10 mb-16">
+          {passt.map((p, i) => (
+            <Reveal key={i} delay={i < 4 ? `stagger-${i + 1}` : ''}>
+              <div className="border-l-[3px] border-[#E87722] pl-8 py-2">
+                <h3 className="text-2xl lg:text-3xl font-bold mb-3" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+                  {p.title}
+                </h3>
+                <p className="text-lg text-neutral-600 leading-relaxed">{p.desc}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal>
+          <div className="bg-white border border-neutral-200 p-10 lg:p-12">
+            <p className="text-xl lg:text-2xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
+              Was du nicht sein musst
+            </p>
+            <p className="text-lg text-neutral-600 leading-relaxed">
+              BBA ist kein Informatik-Studium und bildet keine Nerds aus. Es geht nicht darum, den ganzen Tag Code zu schreiben. Es geht darum, Wirtschaft zu verstehen, Technologie sinnvoll einzusetzen und mit Daten bessere Entscheidungen zu treffen. Die Mischung macht's — und genau die ist auf dem Arbeitsmarkt so gefragt.
+            </p>
+          </div>
+        </Reveal>
       </div>
     </section>
   )
@@ -926,10 +993,10 @@ function Wuerzburg() {
           <Reveal>
             <div className="space-y-8 text-lg text-neutral-600 leading-relaxed">
               <p>
-                130.000 Einwohner, davon 35.000 Studierende. Würzburg ist eine Stadt, in der sich alles zu Fuß oder mit dem Rad erreichen lässt — Uni, Cafés, Mainufer, Altstadt.
+                Rund 128.000 Einwohner, davon über 35.000 Studierende. Würzburg ist eine Stadt, in der sich alles zu Fuß oder mit dem Rad erreichen lässt — Uni, Cafés, Mainufer, Altstadt.
               </p>
               <p>
-                Die Lebenshaltungskosten liegen deutlich unter München oder Frankfurt. WG-Zimmer ab 350 €, Mensaessen ab 2,60 €, Semesterticket für ganz Unterfranken inklusive.
+                Die Lebenshaltungskosten liegen deutlich unter München oder Frankfurt. WG-Zimmer ab ca. 400 €, günstiges Mensaessen, Semesterticket für ganz Unterfranken inklusive.
               </p>
               <p>
                 Die THWS (Technische Hochschule Würzburg-Schweinfurt) ist bekannt für praxisnahe Lehre mit direktem Kontakt zu Professoren und kleinen Kursgrößen — kein anonymer Massenbetrieb.
@@ -943,12 +1010,12 @@ function Wuerzburg() {
           <Reveal delay="stagger-2">
             <div className="space-y-6">
               {[
-                { label: 'Studierende in Würzburg', value: '35.000' },
-                { label: 'Ranking: Lebensqualität Studentenstädte', value: 'Top 10' },
+                { label: 'Studierende in Würzburg', value: '35.000+' },
+                { label: 'Anteil 18–30-Jährige', value: 'Höchster in DE' },
                 { label: 'Entfernung Innenstadt — Campus', value: '10 min (Rad)' },
-                { label: 'WG-Zimmer ab', value: '~350 €/Monat' },
+                { label: 'WG-Zimmer ab', value: '~400 €/Monat' },
                 { label: 'Semesterticket', value: 'ganz Unterfranken' },
-                { label: 'Sonnenstunden pro Jahr', value: '1.750+' },
+                { label: 'Sonnenstunden pro Jahr', value: '1.650+' },
               ].map((fact, i) => (
                 <div key={i} className="flex justify-between items-baseline border-b border-neutral-100 pb-4">
                   <span className="text-base text-neutral-500">{fact.label}</span>
@@ -975,15 +1042,15 @@ function CTA() {
         <Reveal>
           <p className="text-base font-medium tracking-widest uppercase mb-5" style={{ color: '#E87722' }}>Nächster Schritt</p>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>
-            Bereit für datenbasierte Entscheidungen?
+            Klingt nach dir?
           </h2>
           <p className="text-xl text-neutral-500 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Bewerbungsstart ist jedes Jahr im Mai. Kein NC — die Motivation zählt.
+            Bewerbungszeitraum: 1. Mai bis 15. Juli. Zulassungsfrei — kein NC.
           </p>
         </Reveal>
 
         <Reveal delay="stagger-1">
-          <div className="grid sm:grid-cols-3 gap-8 mb-14 text-left max-w-2xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-14 text-left max-w-3xl mx-auto">
             <div>
               <p className="text-sm text-neutral-400 uppercase tracking-widest mb-1">Abschluss</p>
               <p className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>B.Sc.</p>
@@ -995,6 +1062,10 @@ function CTA() {
             <div>
               <p className="text-sm text-neutral-400 uppercase tracking-widest mb-1">Start</p>
               <p className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>Oktober</p>
+            </div>
+            <div>
+              <p className="text-sm text-neutral-400 uppercase tracking-widest mb-1">Plätze</p>
+              <p className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk', color: '#1A1A2E' }}>ca. 40</p>
             </div>
           </div>
         </Reveal>
@@ -1009,7 +1080,7 @@ function CTA() {
             Jetzt bewerben
           </a>
           <p className="mt-6 text-base text-neutral-400">
-            Fragen? Schreib an <a href="mailto:studienberatung@thws.de" className="text-[#E87722] hover:underline">studienberatung@thws.de</a>
+            Fragen? Schreib an <a href="mailto:bba.fwiwi@thws.de" className="text-[#E87722] hover:underline">bba.fwiwi@thws.de</a>
           </p>
         </Reveal>
       </div>
