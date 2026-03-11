@@ -800,11 +800,29 @@ function Berufswelt() {
             ))}
             <Reveal>
               <div className="mt-4 p-6 rounded-2xl bg-neutral-50 border-2 border-neutral-200">
-                <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
-                  <strong style={{ ...SG, color: INK }}>Warum steht dir so viel offen?</strong> Im BBA lernst du die Basics,
-                  die in fast jedem Master vorausgesetzt werden: wissenschaftliches Arbeiten, Statistik, Programmieren, wirtschaftliches
-                  Denken. Diese Kombination ist selten — und genau deshalb so wertvoll. Viele spezialisierte Master suchen genau solche
-                  Quereinsteiger mit breitem analytischem Fundament.
+                <p className="text-lg sm:text-xl font-bold mb-4" style={{ ...SG, color: INK }}>Warum steht dir so viel offen?</p>
+                <p className="text-base sm:text-lg text-neutral-600 leading-relaxed mb-5">
+                  Im BBA baust du dir ein ungewöhnlich breites Fundament auf — und genau das macht dich für so viele
+                  Master-Programme interessant. Was du mitbringst:
+                </p>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
+                  {[
+                    ['Statistik & Mathematik', 'Hypothesentests, Wahrscheinlichkeit, lineare Algebra — die Sprache, die jeder quantitative Master voraussetzt.'],
+                    ['Programmieren & IT', 'Python, SQL, Datenbanken, Algorithmen — du kannst nicht nur analysieren, sondern auch implementieren.'],
+                    ['BWL & VWL', 'Mikro- & Makroökonomik, Marketing, Controlling — du verstehst, wie Wirtschaft funktioniert.'],
+                    ['Wissenschaftliches Arbeiten', 'Methodik, Quellenarbeit, kritisches Denken — die Grundlage jeder Master-Thesis.'],
+                    ['Projektmanagement', 'Planung, Teamarbeit, agile Methoden — du kannst komplexe Vorhaben strukturiert umsetzen.'],
+                    ['Interkulturelle Kompetenz & Sprachen', 'Englischsprachige Module, internationale Fallstudien — du bist auf globale Programme vorbereitet.'],
+                  ].map(([title, desc], i) => (
+                    <div key={i} className="p-4 rounded-xl bg-white border border-neutral-200">
+                      <p className="text-sm font-semibold mb-1" style={{ color: INK }}>{title}</p>
+                      <p className="text-sm text-neutral-500 leading-relaxed">{desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-base text-neutral-500 leading-relaxed">
+                  Diese Kombination ist selten — und genau deshalb so wertvoll. Viele spezialisierte Master suchen
+                  Quereinsteiger mit breitem analytischem Fundament statt Bewerber, die nur ein Fach kennen.
                 </p>
               </div>
             </Reveal>
