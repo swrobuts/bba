@@ -808,7 +808,7 @@ function Berufswelt() {
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
                   {[
                     ['Statistik & Mathematik', 'Hypothesentests, Wahrscheinlichkeit, lineare Algebra — die Sprache, die jeder quantitative Master voraussetzt.'],
-                    ['Programmieren & IT', 'Python, SQL, Datenbanken, Algorithmen — du kannst nicht nur analysieren, sondern auch implementieren.'],
+                    ['Programmieren & IT', 'Python, R, SQL, Excel, Datenbanken, Algorithmen — du kannst nicht nur analysieren, sondern auch implementieren.'],
                     ['BWL & VWL', 'Mikro- & Makroökonomik, Marketing, Controlling — du verstehst, wie Wirtschaft funktioniert.'],
                     ['Wissenschaftliches Arbeiten', 'Methodik, Quellenarbeit, kritisches Denken — die Grundlage jeder Master-Thesis.'],
                     ['Projektmanagement', 'Planung, Teamarbeit, agile Methoden — du kannst komplexe Vorhaben strukturiert umsetzen.'],
