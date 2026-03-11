@@ -153,16 +153,24 @@ function Hero() {
                 Entscheidungen.
               </span>
             </h1>
-            <p className={`text-xl sm:text-2xl text-neutral-400 mt-8 max-w-lg transition-all duration-700 delay-300 ${phase >= 2 ? 'opacity-100' : 'opacity-0 translate-y-6'}`}>
-              Die Frage ist: Wie?
+            <p className={`mt-10 transition-all duration-700 delay-300 ${phase >= 2 ? 'opacity-100' : 'opacity-0 translate-y-6'}`}>
+              <span className="text-xl sm:text-2xl text-neutral-400">Die Frage ist: </span>
+              <span
+                className={`inline-block text-[clamp(2.5rem,5vw,4.5rem)] font-bold tracking-tight transition-all duration-1000 delay-700 ${phase >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}
+                style={{ ...SG, color: ORANGE }}
+              >
+                Wie?
+              </span>
             </p>
           </div>
-          <div className={`hidden lg:flex flex-col items-center gap-3 pt-20 transition-all duration-700 delay-500 ${phase >= 2 ? 'opacity-100' : 'opacity-0'}`}>
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('https://swrobuts.github.io/bba/')}&color=111111&bgcolor=FFFFFF`}
-              alt="QR-Code" width={140} height={140}
-            />
-            <p className="text-xs text-neutral-300">Am Handy öffnen</p>
+          <div className={`hidden lg:flex flex-col items-center gap-4 pt-12 transition-all duration-700 delay-500 ${phase >= 2 ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="p-4 bg-white">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent('https://swrobuts.github.io/bba/')}&color=111111&bgcolor=FFFFFF&margin=0`}
+                alt="QR-Code" width={200} height={200}
+              />
+            </div>
+            <p className="text-xs text-neutral-300 tracking-wide">Am Handy öffnen</p>
           </div>
         </div>
       </div>
@@ -185,9 +193,9 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
   }, [gateOpen, bbaChosen])
 
   const wrong = [
-    { id: 'bauch', title: 'Bauchgefühl', desc: 'Erfahrung und Intuition reichen.', fail: 'Unser Gehirn täuscht uns häufiger, als wir denken. Wir überschätzen, was wir kennen, und übersehen, was wir nicht wissen.' },
-    { id: 'raten', title: 'Einfach raten', desc: 'Wird schon irgendwie passen.', fail: 'Raten ist nicht nachvollziehbar. Wenn es schiefgeht, weißt du nicht warum — und wenn es klappt, auch nicht.' },
-    { id: 'chef', title: 'Der Chef entscheidet', desc: 'Wer am längsten da ist, weiß es am besten.', fail: 'Was gestern funktioniert hat, kann morgen falsch sein. Märkte verändern sich — Erfahrung allein reicht nicht.' },
+    { id: 'bauch', title: 'Intuition vertrauen', desc: 'Erfahrung und Bauchgefühl reichen.', fail: 'Unser Gehirn täuscht uns häufiger, als wir denken. Wir überschätzen, was wir kennen, und übersehen, was wir nicht wissen.' },
+    { id: 'raten', title: 'Zufall akzeptieren', desc: 'Wird schon irgendwie passen.', fail: 'Raten ist nicht nachvollziehbar. Wenn es schiefgeht, weißt du nicht warum — und wenn es klappt, auch nicht.' },
+    { id: 'chef', title: 'Hierarchie folgen', desc: 'Wer am längsten da ist, weiß es am besten.', fail: 'Was gestern funktioniert hat, kann morgen falsch sein. Märkte verändern sich — Erfahrung allein reicht nicht.' },
   ]
 
   const handleWrong = (id: string) => {
@@ -240,9 +248,9 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
                 ${bbaChosen ? 'bg-white' : 'bg-white hover:bg-neutral-50'}`}
               style={{ border: `2px solid ${bbaChosen ? ORANGE : '#e5e5e5'}` }}
             >
-              <p className={`text-lg font-bold mb-1 ${bbaChosen ? '' : 'text-neutral-800'}`} style={{ ...SG, color: bbaChosen ? ORANGE : undefined }}>Business Analytics</p>
+              <p className={`text-lg font-bold mb-1 ${bbaChosen ? '' : 'text-neutral-800'}`} style={{ ...SG, color: bbaChosen ? ORANGE : undefined }}>Daten analysieren</p>
               {!bbaChosen
-                ? <p className="text-sm text-neutral-400">Daten sammeln, analysieren, verstehen — und dann entscheiden.</p>
+                ? <p className="text-sm text-neutral-400">Fakten sammeln, Muster und Zusammenhänge erkennen — und dann nachvollziehbar entscheiden.</p>
                 : <p className="text-sm" style={{ color: ORANGE }}>Genau. Nicht raten, sondern wissen.</p>
               }
               {allWrong && !bbaChosen && <div className="absolute top-3 right-3 w-2 h-2 rounded-full animate-pulse" style={{ background: ORANGE }} />}
@@ -261,7 +269,7 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
 
 /* ─── FALLSTUDIE — Dark, cinematic ─── */
 function Fallstudie() {
-  const [showData, setShowData] = useState(false)
+  const [showData, setShowData] = useState(true)
   return (
     <section id="fallstudie" className="py-28 lg:py-40" style={{ background: INK }}>
       <div className="max-w-5xl mx-auto px-6">
@@ -277,11 +285,11 @@ function Fallstudie() {
 
         <Reveal>
           <div className="flex gap-0 mb-12">
-            <button onClick={() => setShowData(false)} className={`px-6 py-3 text-sm font-medium transition-all ${!showData ? 'text-white' : 'text-neutral-600 hover:text-neutral-400'}`} style={!showData ? { background: ORANGE } : {}}>
-              Team Bauchgefühl
-            </button>
             <button onClick={() => setShowData(true)} className={`px-6 py-3 text-sm font-medium transition-all ${showData ? 'text-white' : 'text-neutral-600 hover:text-neutral-400'}`} style={showData ? { background: ORANGE } : {}}>
               Team Analytics
+            </button>
+            <button onClick={() => setShowData(false)} className={`px-6 py-3 text-sm font-medium transition-all ${!showData ? 'text-white' : 'text-neutral-600 hover:text-neutral-400'}`} style={!showData ? { background: ORANGE } : {}}>
+              Team Bauchgefühl
             </button>
           </div>
         </Reveal>
@@ -354,18 +362,23 @@ function Fallstudie() {
               <p className="text-white text-lg font-medium mb-8" style={SG}>Jede dieser Methoden lernst du im BBA:</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-6">
                 {[
-                  ['Clusteranalyse', 'Semester 4'],
-                  ['Geo-Datenanalyse', 'Semester 3'],
-                  ['Zeitreihenanalyse', 'Semester 3'],
-                  ['Conjoint-Analyse', 'Semester 4'],
-                  ['ML-Prognosen', 'Semester 6'],
-                  ['Dashboard-Design', 'Semester 2–3'],
-                  ['Budget-Monitoring', 'Semester 4'],
-                  ['Datenschutz', 'Semester 1'],
-                ].map(([s, sem], i) => (
+                  ['Clusteranalyse', 'Statistik f. Data Science', 'Sem. 4'],
+                  ['Geo-Datenanalyse', 'Business Intelligence', 'Sem. 3'],
+                  ['Zeitreihenanalyse', 'Ökonometrie', 'Sem. 3'],
+                  ['Conjoint-Analyse', 'Markt- & Konsumforschung', 'Sem. 4'],
+                  ['ML-Prognosen', 'Vertiefung Bus. Analytics', 'Sem. 6'],
+                  ['Dashboard-Design', 'Business Intelligence', 'Sem. 3'],
+                  ['Budget-Monitoring', 'Controlling', 'Sem. 4'],
+                  ['Datenschutz (DSGVO)', 'Recht & Datenschutz', 'Sem. 1'],
+                  ['Preisbildung', 'Mikroökonomik', 'Sem. 1'],
+                  ['Marktmechanismen', 'Makroökonomik', 'Sem. 2'],
+                  ['Verantwortung & KI', 'Wiss. Arbeiten & Ethik', 'Sem. 2'],
+                  ['Projektsteuerung', 'Projekt- & IT-Management', 'Sem. 1'],
+                ].map(([s, modul, sem], i) => (
                   <div key={i}>
                     <p style={{ color: ORANGE }} className="text-sm font-medium">{s}</p>
-                    <p className="text-neutral-600 text-xs">{sem}</p>
+                    <p className="text-neutral-500 text-xs">{modul}</p>
+                    <p className="text-neutral-700 text-xs">{sem}</p>
                   </div>
                 ))}
               </div>
@@ -382,14 +395,29 @@ function Fallstudie() {
 function DemingQuote() {
   return (
     <section className="py-28 lg:py-40 bg-white">
-      <div className="max-w-4xl mx-auto px-6 text-center">
+      <div className="max-w-4xl mx-auto px-6">
         <Reveal>
-          <p className="text-3xl sm:text-4xl lg:text-[3.5rem] font-bold leading-snug tracking-tight mb-8" style={{ ...SG, color: INK }}>
-            &ldquo;In God we trust; all others must bring data.&rdquo;
-          </p>
-          <p className="text-neutral-400">
-            W. Edwards Deming
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-10 sm:gap-16">
+            {/* Portrait — LinkedIn style: round, grayscale, subtle border */}
+            <div className="flex-shrink-0">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-neutral-200" style={{ background: '#f5f5f5' }}>
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/W._Edwards_Deming_%28cropped%29.jpg/440px-W._Edwards_Deming_%28cropped%29.jpg"
+                  alt="W. Edwards Deming"
+                  className="w-full h-full object-cover grayscale"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div className="text-center sm:text-left">
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug tracking-tight mb-4" style={{ ...SG, color: INK }}>
+                &ldquo;In God we trust; all others must bring data.&rdquo;
+              </p>
+              <p className="text-neutral-400 text-sm">
+                <span className="font-medium text-neutral-500">W. Edwards Deming</span> · Statistiker, Qualitätspionier
+              </p>
+            </div>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -397,30 +425,30 @@ function DemingQuote() {
 }
 
 
-/* ─── MODUL-NETZWERK ─── */
+/* ─── MODUL-NETZWERK — Spring Embedder ─── */
 function WasDuLernst() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
   const animRef = useRef(0)
 
-  const modules = [
-    { id: 'bwl', label: 'BWL', x: 0.12, y: 0.22, cat: 'w' },
-    { id: 'mktg', label: 'Marketing', x: 0.08, y: 0.45, cat: 'w' },
-    { id: 'ctrl', label: 'Controlling', x: 0.15, y: 0.68, cat: 'w' },
-    { id: 'mafo', label: 'Marktforschung', x: 0.22, y: 0.88, cat: 'w' },
-    { id: 'dioek', label: 'Dig. Ökonomie', x: 0.06, y: 0.78, cat: 'w' },
-    { id: 'stat', label: 'Statistik', x: 0.45, y: 0.15, cat: 't' },
-    { id: 'prog', label: 'Programmieren', x: 0.55, y: 0.35, cat: 't' },
-    { id: 'bint', label: 'Business Intelligence', x: 0.42, y: 0.55, cat: 't' },
-    { id: 'oeko', label: 'Ökonometrie', x: 0.58, y: 0.72, cat: 't' },
-    { id: 'dav', label: 'DAV', x: 0.50, y: 0.90, cat: 't' },
-    { id: 'ds', label: 'Data Science', x: 0.65, y: 0.52, cat: 't' },
-    { id: 'db', label: 'Datenbanken', x: 0.70, y: 0.30, cat: 't' },
-    { id: 'recht', label: 'Recht', x: 0.88, y: 0.25, cat: 'u' },
-    { id: 'pm', label: 'Projektmgmt.', x: 0.92, y: 0.50, cat: 'u' },
-    { id: 'ethik', label: 'Ethik', x: 0.85, y: 0.72, cat: 'u' },
-    { id: 'wiss', label: 'Wiss. Arbeiten', x: 0.80, y: 0.88, cat: 'u' },
+  const moduleDefs = [
+    { id: 'bwl', label: 'BWL', cat: 'w' },
+    { id: 'mktg', label: 'Marketing', cat: 'w' },
+    { id: 'ctrl', label: 'Controlling', cat: 'w' },
+    { id: 'mafo', label: 'Marktforschung', cat: 'w' },
+    { id: 'dioek', label: 'Dig. Ökonomie', cat: 'w' },
+    { id: 'stat', label: 'Statistik', cat: 't' },
+    { id: 'prog', label: 'Programmieren', cat: 't' },
+    { id: 'bint', label: 'Business Intelligence', cat: 't' },
+    { id: 'oeko', label: 'Ökonometrie', cat: 't' },
+    { id: 'dav', label: 'DAV', cat: 't' },
+    { id: 'ds', label: 'Data Science', cat: 't' },
+    { id: 'db', label: 'Datenbanken', cat: 't' },
+    { id: 'recht', label: 'Recht', cat: 'u' },
+    { id: 'pm', label: 'Projektmgmt.', cat: 'u' },
+    { id: 'ethik', label: 'Ethik', cat: 'u' },
+    { id: 'wiss', label: 'Wiss. Arbeiten', cat: 'u' },
   ]
 
   const edges: [string, string][] = [
@@ -438,7 +466,7 @@ function WasDuLernst() {
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setIsVisible(true) }, { threshold: 0.15 })
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setIsVisible(true) }, { threshold: 0.1 })
     obs.observe(el)
     return () => obs.disconnect()
   }, [])
@@ -449,13 +477,91 @@ function WasDuLernst() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const N = moduleDefs.length
+    const idIdx: Record<string, number> = {}
+    moduleDefs.forEach((m, i) => { idIdx[m.id] = i })
+
+    /* ─── Spring Embedder State ─── */
+    // Seed positions: cluster by category with some spread
+    const catCenters: Record<string, [number, number]> = { w: [0.22, 0.5], t: [0.5, 0.5], u: [0.78, 0.5] }
+    const px = new Float64Array(N)
+    const py = new Float64Array(N)
+    const vx = new Float64Array(N)
+    const vy = new Float64Array(N)
+    // Deterministic seed
+    let seed = 42
+    const rand = () => { seed = (seed * 16807 + 0) % 2147483647; return seed / 2147483647 }
+    moduleDefs.forEach((m, i) => {
+      const c = catCenters[m.cat]
+      px[i] = c[0] + (rand() - 0.5) * 0.25
+      py[i] = c[1] + (rand() - 0.5) * 0.4
+    })
+
+    const edgeIdx = edges.map(([a, b]) => [idIdx[a], idIdx[b]] as [number, number])
+
+    /* Physics constants — tuned for readable spread */
+    const REPULSION = 0.0008
+    const SPRING_K = 0.015
+    const SPRING_LEN = 0.14
+    const DAMPING = 0.88
+    const GRAVITY = 0.0003
+    const PAD = 0.08
+
+    let simSteps = 0
+    const SIM_WARMUP = 200  // run physics silently before first paint
+    const SIM_ACTIVE = 600  // total physics steps
+
+    /* Run warmup synchronously (no paint) */
+    const step = () => {
+      for (let i = 0; i < N; i++) {
+        let fx = 0, fy = 0
+        // Repulsion from all other nodes
+        for (let j = 0; j < N; j++) {
+          if (i === j) continue
+          let dx = px[i] - px[j], dy = py[i] - py[j]
+          let dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < 0.001) { dist = 0.001; dx = (rand() - 0.5) * 0.01; dy = (rand() - 0.5) * 0.01 }
+          const f = REPULSION / (dist * dist)
+          fx += (dx / dist) * f
+          fy += (dy / dist) * f
+        }
+        // Spring attraction along edges
+        for (const [a, b] of edgeIdx) {
+          const other = a === i ? b : b === i ? a : -1
+          if (other < 0) continue
+          const dx = px[other] - px[i], dy = py[other] - py[i]
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < 0.001) continue
+          const displacement = dist - SPRING_LEN
+          const f = SPRING_K * displacement
+          fx += (dx / dist) * f
+          fy += (dy / dist) * f
+        }
+        // Gravity toward center
+        fx += (0.5 - px[i]) * GRAVITY
+        fy += (0.5 - py[i]) * GRAVITY
+        vx[i] = (vx[i] + fx) * DAMPING
+        vy[i] = (vy[i] + fy) * DAMPING
+      }
+      for (let i = 0; i < N; i++) {
+        px[i] = Math.max(PAD, Math.min(1 - PAD, px[i] + vx[i]))
+        py[i] = Math.max(PAD, Math.min(1 - PAD, py[i] + vy[i]))
+      }
+      simSteps++
+    }
+
+    // Silent warmup
+    for (let i = 0; i < SIM_WARMUP; i++) step()
+
+    /* Intro animation */
     let frame = 0
-    const introFrames = 120
-    const phases = modules.map(() => Math.random() * Math.PI * 2)
-    const speeds = modules.map(() => 0.006 + Math.random() * 0.01)
-    const amps = modules.map(() => 0.002 + Math.random() * 0.004)
+    const introFrames = 90
+    const phases = moduleDefs.map(() => rand() * Math.PI * 2)
 
     const draw = () => {
+      // Continue physics if not converged
+      if (simSteps < SIM_ACTIVE) step()
+
       const rect = canvas.getBoundingClientRect()
       const dpr = window.devicePixelRatio || 1
       canvas.width = rect.width * dpr
@@ -467,52 +573,60 @@ function WasDuLernst() {
       const t = Math.min(frame / introFrames, 1)
       const ease = 1 - Math.pow(1 - t, 3)
 
-      const pos = (i: number) => {
-        const m = modules[i]
-        const fx = t >= 1 ? Math.sin(frame * speeds[i] + phases[i]) * amps[i] : 0
-        const fy = t >= 1 ? Math.cos(frame * speeds[i] * 0.7 + phases[i] + 1) * amps[i] : 0
-        return { x: (m.x + fx) * W, y: (m.y + fy) * H }
-      }
-
-      // edges
-      const ep = Math.min(t * 1.5, 1)
-      edges.forEach(([fId, tId], idx) => {
-        const fi = modules.findIndex(m => m.id === fId)
-        const ti = modules.findIndex(m => m.id === tId)
-        const p = Math.max(0, Math.min((ep - idx * 0.015) * 2, 1))
+      /* ─── Draw edges ─── */
+      const ep = Math.min(t * 1.8, 1)
+      edgeIdx.forEach(([fi, ti], idx) => {
+        const p = Math.max(0, Math.min((ep - idx * 0.012) * 2.5, 1))
         if (p <= 0) return
-        const f = pos(fi), to = pos(ti)
-        const cross = modules[fi].cat !== modules[ti].cat
-        const pulse = t >= 1 ? 0.5 + 0.5 * Math.sin(frame * 0.015 + idx * 0.3) : 1
+        const x1 = px[fi] * W, y1 = py[fi] * H
+        const x2 = px[ti] * W, y2 = py[ti] * H
+        const cross = moduleDefs[fi].cat !== moduleDefs[ti].cat
         ctx.strokeStyle = cross
-          ? `rgba(232,119,34,${0.15 * p * pulse})`
-          : `rgba(0,0,0,${0.06 * p * pulse})`
-        ctx.lineWidth = cross ? 1.5 : 0.5
-        ctx.beginPath(); ctx.moveTo(f.x, f.y)
-        ctx.lineTo(p < 1 ? f.x + (to.x - f.x) * p : to.x, p < 1 ? f.y + (to.y - f.y) * p : to.y)
+          ? `rgba(232,119,34,${0.2 * p})`
+          : `rgba(0,0,0,${0.08 * p})`
+        ctx.lineWidth = cross ? 1.5 : 0.8
+        ctx.beginPath()
+        ctx.moveTo(x1, y1)
+        if (p < 1) {
+          ctx.lineTo(x1 + (x2 - x1) * p, y1 + (y2 - y1) * p)
+        } else {
+          ctx.lineTo(x2, y2)
+        }
         ctx.stroke()
       })
 
-      // nodes
-      modules.forEach((m, i) => {
-        const d = i * 0.03
-        const np = Math.max(0, Math.min((ease - d) * 1.5, 1))
-        if (np <= 0) return
-        const p = pos(i)
-        const r = Math.max(6, W * 0.013) * np * (t >= 1 ? 1 + 0.06 * Math.sin(frame * 0.012 + phases[i]) : 1)
+      /* ─── Draw nodes ─── */
+      const isMobile = W < 500
+      const nodeR = isMobile ? Math.max(5, W * 0.018) : Math.max(7, W * 0.012)
+      const fontSize = isMobile ? Math.max(10, W * 0.028) : Math.max(12, W * 0.014)
 
-        ctx.beginPath(); ctx.arc(p.x, p.y, r * 2.5, 0, Math.PI * 2)
-        ctx.fillStyle = m.cat === 'w' ? `rgba(232,119,34,${0.06 * np})` : `rgba(0,0,0,${0.03 * np})`
+      moduleDefs.forEach((m, i) => {
+        const d = i * 0.025
+        const np = Math.max(0, Math.min((ease - d) * 1.8, 1))
+        if (np <= 0) return
+
+        const cx = px[i] * W, cy = py[i] * H
+        const breathe = t >= 1 ? 1 + 0.05 * Math.sin(frame * 0.02 + phases[i]) : 1
+        const r = nodeR * np * breathe
+
+        // Glow
+        ctx.beginPath(); ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2)
+        ctx.fillStyle = m.cat === 'w'
+          ? `rgba(232,119,34,${0.08 * np})`
+          : m.cat === 't' ? `rgba(80,80,80,${0.05 * np})` : `rgba(150,150,150,${0.04 * np})`
         ctx.fill()
 
-        ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
-        ctx.fillStyle = catColors[m.cat]; ctx.globalAlpha = np; ctx.fill(); ctx.globalAlpha = 1
+        // Node
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2)
+        ctx.fillStyle = catColors[m.cat]
+        ctx.globalAlpha = np; ctx.fill(); ctx.globalAlpha = 1
 
-        const fs = Math.max(11, W * 0.015)
-        ctx.font = `600 ${fs}px 'Space Grotesk', system-ui`
-        ctx.fillStyle = `rgba(17,17,17,${np * 0.7})`
+        // Label
+        ctx.font = `600 ${fontSize}px 'Space Grotesk', system-ui`
+        ctx.fillStyle = `rgba(17,17,17,${np * 0.8})`
         ctx.textAlign = 'center'
-        ctx.fillText(m.label, p.x, p.y - r - 7)
+        ctx.textBaseline = 'bottom'
+        ctx.fillText(m.label, cx, cy - r - 4)
       })
 
       frame++
@@ -536,14 +650,14 @@ function WasDuLernst() {
         </Reveal>
 
         <Reveal>
-          <div className="flex gap-8 mb-10 text-sm text-neutral-400">
+          <div className="flex flex-wrap gap-x-8 gap-y-2 mb-10 text-sm text-neutral-400">
             <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full" style={{ background: ORANGE }} /> Wirtschaft</span>
             <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-neutral-500" /> Technologie</span>
             <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-neutral-300" /> Überfachlich</span>
           </div>
         </Reveal>
 
-        <div ref={containerRef} className="relative w-full" style={{ aspectRatio: '16/10' }}>
+        <div ref={containerRef} className="relative w-full" style={{ aspectRatio: '4/3' }}>
           <canvas ref={canvasRef} className="w-full h-full" />
         </div>
       </div>
@@ -723,7 +837,7 @@ function Berufswelt() {
                 {[
                   ['4.000+', 'Offene Data-Analyst-Stellen in DE'],
                   ['52–67k €', 'Durchschnittliches Einstiegsgehalt'],
-                  ['+25%', 'Jährliches Marktwachstum'],
+                  ['Top 10', 'Gefragteste Qualifikation laut LinkedIn'],
                 ].map(([v, l], i) => (
                   <div key={i}>
                     <p className="text-3xl sm:text-4xl font-bold mb-1" style={{ ...SG, color: INK }}>{v}</p>
@@ -791,12 +905,12 @@ function PasstDu() {
 /* ─── VORTEILE + STUDYCHECK ─── */
 function Vorteile() {
   const facts = [
-    ['~30', 'Studierende pro Jahrgang'],
+    ['Klein', 'Persönliche Atmosphäre, keine Massenvorlesung'],
     ['3 in 1', 'BWL + IT + Analytik'],
     ['Sem. 5', 'Praxissemester im Unternehmen'],
-    ['+25%', 'Marktwachstum pro Jahr'],
+    ['Top 10', 'Gefragteste Skills laut LinkedIn'],
     ['B.Sc.', 'Bachelor of Science'],
-    ['~150 €', 'Semesterbeitrag, keine Studiengebühren'],
+    ['Keine', 'Studiengebühren'],
   ]
 
   return (
@@ -879,7 +993,7 @@ function Wuerzburg() {
             <div className="space-y-6 text-neutral-500 leading-relaxed">
               <p>Rund 128.000 Einwohner, davon über 35.000 Studierende. Alles zu Fuß oder mit dem Rad erreichbar — Uni, Cafés, Mainufer, Altstadt.</p>
               <p>Die Lebenshaltungskosten liegen deutlich unter München oder Frankfurt. WG-Zimmer ab ca. 400 €, Semesterticket für ganz Unterfranken inklusive.</p>
-              <p>Im BBA studieren nur rund 30 Studierende pro Jahrgang — du kennst deine Kommilitonen und deine Profs persönlich. Kein Massenbetrieb.</p>
+              <p>Im BBA kennst du deine Kommilitonen und deine Profs persönlich. Kein Massenbetrieb.</p>
               <p>Die Region ist wirtschaftlich stark: s.Oliver, Brose, Koenig & Bauer und zahlreiche IT-Dienstleister bieten Praktikums- und Einstiegsmöglichkeiten direkt vor Ort.</p>
             </div>
           </Reveal>
@@ -894,9 +1008,9 @@ function Wuerzburg() {
                 ['Semesterticket', 'ganz Unterfranken'],
                 ['Sonnenstunden/Jahr', '1.650+'],
               ].map(([l, v], i) => (
-                <div key={i} className="flex justify-between items-baseline pb-3 border-b border-neutral-200">
-                  <span className="text-sm text-neutral-400">{l}</span>
-                  <span className="font-bold" style={{ ...SG, color: INK }}>{v}</span>
+                <div key={i} className="flex justify-between items-baseline gap-4 pb-3 border-b border-neutral-200">
+                  <span className="text-xs sm:text-sm text-neutral-400 shrink-0">{l}</span>
+                  <span className="text-sm sm:text-base font-bold text-right" style={{ ...SG, color: INK }}>{v}</span>
                 </div>
               ))}
             </div>
@@ -924,7 +1038,7 @@ function CTA() {
 
         <Reveal delay="stagger-1">
           <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 mb-14 text-left">
-            {[['Abschluss', 'B.Sc.'], ['Dauer', '7 Semester'], ['Start', 'Oktober'], ['Plätze', 'ca. 40']].map(([l, v], i) => (
+            {[['Abschluss', 'B.Sc.'], ['Dauer', '7 Semester'], ['Start', 'Immer im Oktober']].map(([l, v], i) => (
               <div key={i}>
                 <p className="text-xs text-neutral-300 uppercase tracking-[0.15em] mb-0.5">{l}</p>
                 <p className="font-bold" style={{ ...SG, color: INK }}>{v}</p>
