@@ -61,11 +61,11 @@ export default function App() {
       <Weiche onChooseBBA={openGate} gateOpen={gateOpen} />
       {/* Scroll-trigger zone: gives enough room to scroll past Weiche on mobile */}
       {!gateOpen && (
-        <div ref={weicheEndRef} className="flex flex-col items-center justify-center py-20 text-neutral-300">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce mb-3 opacity-40">
+        <div ref={weicheEndRef} className="flex flex-col items-center justify-center py-28 sm:py-32">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" className="animate-bounce mb-4">
             <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
-          <p className="text-xs tracking-wide opacity-40">Weiter scrollen</p>
+          <p className="text-base font-medium" style={{ color: ORANGE }}>Weiter scrollen</p>
         </div>
       )}
       {gateOpen && <div ref={weicheEndRef} />}
@@ -179,7 +179,6 @@ function Hero() {
                 alt="QR-Code" width={200} height={200}
               />
             </div>
-            <p className="text-xs text-neutral-300 tracking-wide">Am Handy öffnen</p>
           </div>
         </div>
       </div>
@@ -223,27 +222,27 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-center mb-4" style={{ ...SG, color: INK }}>
             Wie würdest du entscheiden?
           </h2>
-          <p className="text-lg text-neutral-400 text-center max-w-xl mx-auto mb-16">
+          <p className="text-lg sm:text-xl text-neutral-400 text-center max-w-xl mx-auto mb-16">
             Ein Getränkehersteller will einen neuen Eistee launchen.<br />Millionen-Budget. Vier Ansätze.
           </p>
         </Reveal>
 
-        <div className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+        <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {wrong.map((o, i) => (
             <Reveal key={o.id} delay={`stagger-${i + 1}`}>
               <button
                 onClick={() => handleWrong(o.id)}
                 disabled={bbaChosen}
-                className={`w-full text-left p-7 transition-all duration-500
+                className={`w-full h-full text-left p-7 sm:p-8 transition-all duration-500 flex flex-col
                   ${clicked[o.id] ? 'bg-neutral-50' : 'bg-white hover:bg-neutral-50'}
                   ${shaking === o.id ? 'animate-shake' : ''}
                   ${bbaChosen ? 'opacity-30' : ''}`}
-                style={{ border: '1px solid', borderColor: clicked[o.id] ? '#e5e5e5' : '#e5e5e5' }}
+                style={{ border: '1px solid #e5e5e5', minHeight: '160px' }}
               >
-                <p className={`text-lg font-bold mb-1 ${clicked[o.id] ? 'text-neutral-300 line-through' : 'text-neutral-800'}`} style={SG}>{o.title}</p>
+                <p className={`text-lg sm:text-xl font-bold mb-2 ${clicked[o.id] ? 'text-neutral-300 line-through' : 'text-neutral-800'}`} style={SG}>{o.title}</p>
                 {!clicked[o.id]
-                  ? <p className="text-sm text-neutral-400">{o.desc}</p>
-                  : <p className="text-sm text-neutral-400">{o.fail}</p>
+                  ? <p className="text-sm sm:text-base text-neutral-400">{o.desc}</p>
+                  : <p className="text-sm sm:text-base text-neutral-400">{o.fail}</p>
                 }
               </button>
             </Reveal>
@@ -253,14 +252,14 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
             <button
               onClick={handleBBA}
               disabled={bbaChosen}
-              className={`w-full text-left p-7 transition-all duration-500
+              className={`w-full h-full text-left p-7 sm:p-8 transition-all duration-500 flex flex-col
                 ${bbaChosen ? 'bg-white' : 'bg-white hover:bg-neutral-50'}`}
-              style={{ border: `2px solid ${bbaChosen ? ORANGE : '#e5e5e5'}` }}
+              style={{ border: `2px solid ${bbaChosen ? ORANGE : '#e5e5e5'}`, minHeight: '160px' }}
             >
-              <p className={`text-lg font-bold mb-1 ${bbaChosen ? '' : 'text-neutral-800'}`} style={{ ...SG, color: bbaChosen ? ORANGE : undefined }}>Daten analysieren</p>
+              <p className={`text-lg sm:text-xl font-bold mb-2 ${bbaChosen ? '' : 'text-neutral-800'}`} style={{ ...SG, color: bbaChosen ? ORANGE : undefined }}>Daten analysieren</p>
               {!bbaChosen
-                ? <p className="text-sm text-neutral-400">Fakten sammeln, Muster und Zusammenhänge erkennen — und dann nachvollziehbar entscheiden.</p>
-                : <p className="text-sm" style={{ color: ORANGE }}>Genau. Nicht raten, sondern wissen.</p>
+                ? <p className="text-sm sm:text-base text-neutral-400">Fakten sammeln, Muster und Zusammenhänge erkennen — und dann nachvollziehbar entscheiden.</p>
+                : <p className="text-sm sm:text-base" style={{ color: ORANGE }}>Genau. Nicht raten, sondern wissen.</p>
               }
               {allWrong && !bbaChosen && <div className="absolute top-3 right-3 w-2 h-2 rounded-full animate-pulse" style={{ background: ORANGE }} />}
             </button>
@@ -806,14 +805,17 @@ function PasstDu() {
           </p>
         </Reveal>
 
-        <div className="space-y-12">
+        <div className="space-y-14">
           {passt.map((p, i) => (
             <Reveal key={i} delay={i < 4 ? `stagger-${i + 1}` : ''}>
               <div className="flex gap-6 items-start">
-                <div className="w-px h-16 flex-shrink-0 mt-1" style={{ background: ORANGE }} />
+                <div className="flex flex-col items-center flex-shrink-0 mt-2">
+                  <div className="w-4 h-4 rounded-full" style={{ background: ORANGE }} />
+                  <div className="w-0.5 h-12 mt-1" style={{ background: ORANGE, opacity: 0.3 }} />
+                </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ ...SG, color: INK }}>{p.title}</h3>
-                  <p className="text-neutral-500 leading-relaxed">{p.desc}</p>
+                  <p className="text-neutral-500 text-base sm:text-lg leading-relaxed">{p.desc}</p>
                 </div>
               </div>
             </Reveal>
@@ -987,8 +989,8 @@ function CTA() {
           <p className="mt-6 text-sm text-neutral-300">
             Fragen? <a href="mailto:robert.butscher@thws.de" className="hover:underline" style={{ color: ORANGE }}>robert.butscher@thws.de</a>
           </p>
-          <p className="mt-4 text-sm text-neutral-300">
-            <a href="https://www.thws.de/studieninteressierte/studieninfotage/feedback-studieninfotage/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-neutral-500 transition-colors">Feedback zum Studieninfotag geben</a>
+          <p className="mt-4">
+            <a href="https://www.thws.de/studieninteressierte/studieninfotage/feedback-studieninfotage/" target="_blank" rel="noopener noreferrer" className="text-base font-medium underline hover:opacity-80 transition-opacity" style={{ color: ORANGE }}>Feedback zum Studieninfotag geben →</a>
           </p>
         </Reveal>
       </div>
