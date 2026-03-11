@@ -207,7 +207,7 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
   ]
 
   const handleWrong = (id: string) => {
-    if (bbaChosen || clicked[id]) return
+    if (clicked[id]) return
     setShaking(id)
     setClicked(prev => ({ ...prev, [id]: true }))
     setTimeout(() => setShaking(null), 600)
@@ -222,7 +222,7 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-center mb-4" style={{ ...SG, color: INK }}>
             Wie würdest du entscheiden?
           </h2>
-          <p className="text-lg sm:text-xl text-neutral-400 text-center max-w-xl mx-auto mb-16">
+          <p className="text-lg sm:text-xl text-neutral-500 text-center max-w-xl mx-auto mb-16">
             Ein Getränkehersteller will einen neuen Eistee launchen.<br />Millionen-Budget. Vier Ansätze.
           </p>
         </Reveal>
@@ -232,17 +232,15 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
             <Reveal key={o.id} delay={`stagger-${i + 1}`}>
               <button
                 onClick={() => handleWrong(o.id)}
-                disabled={bbaChosen}
-                className={`w-full h-full text-left p-7 sm:p-8 transition-all duration-500 flex flex-col
+                className={`w-full h-full text-left p-7 sm:p-8 transition-all duration-500 flex flex-col cursor-pointer
                   ${clicked[o.id] ? 'bg-neutral-50' : 'bg-white hover:bg-neutral-50'}
-                  ${shaking === o.id ? 'animate-shake' : ''}
-                  ${bbaChosen ? 'opacity-30' : ''}`}
-                style={{ border: '1px solid #e5e5e5', minHeight: '160px' }}
+                  ${shaking === o.id ? 'animate-shake' : ''}`}
+                style={{ border: '2px solid #d4d4d4', minHeight: '160px' }}
               >
-                <p className={`text-lg sm:text-xl font-bold mb-2 ${clicked[o.id] ? 'text-neutral-300 line-through' : 'text-neutral-800'}`} style={SG}>{o.title}</p>
+                <p className={`text-xl sm:text-2xl font-bold mb-3 ${clicked[o.id] ? 'text-neutral-300 line-through' : 'text-neutral-800'}`} style={SG}>{o.title}</p>
                 {!clicked[o.id]
-                  ? <p className="text-sm sm:text-base text-neutral-400">{o.desc}</p>
-                  : <p className="text-sm sm:text-base text-neutral-400">{o.fail}</p>
+                  ? <p className="text-base sm:text-lg text-neutral-500">{o.desc}</p>
+                  : <p className="text-base sm:text-lg text-neutral-500">{o.fail}</p>
                 }
               </button>
             </Reveal>
@@ -254,12 +252,12 @@ function Weiche({ onChooseBBA, gateOpen }: WeicheProps) {
               disabled={bbaChosen}
               className={`w-full h-full text-left p-7 sm:p-8 transition-all duration-500 flex flex-col
                 ${bbaChosen ? 'bg-white' : 'bg-white hover:bg-neutral-50'}`}
-              style={{ border: `2px solid ${bbaChosen ? ORANGE : '#e5e5e5'}`, minHeight: '160px' }}
+              style={{ border: `2px solid ${bbaChosen ? ORANGE : '#d4d4d4'}`, minHeight: '160px' }}
             >
-              <p className={`text-lg sm:text-xl font-bold mb-2 ${bbaChosen ? '' : 'text-neutral-800'}`} style={{ ...SG, color: bbaChosen ? ORANGE : undefined }}>Daten analysieren</p>
+              <p className={`text-xl sm:text-2xl font-bold mb-3 ${bbaChosen ? '' : 'text-neutral-800'}`} style={{ ...SG, color: bbaChosen ? ORANGE : undefined }}>Daten analysieren</p>
               {!bbaChosen
-                ? <p className="text-sm sm:text-base text-neutral-400">Fakten sammeln, Muster und Zusammenhänge erkennen — und dann nachvollziehbar entscheiden.</p>
-                : <p className="text-sm sm:text-base" style={{ color: ORANGE }}>Genau. Nicht raten, sondern wissen.</p>
+                ? <p className="text-base sm:text-lg text-neutral-500">Fakten sammeln, Muster und Zusammenhänge erkennen — und dann nachvollziehbar entscheiden.</p>
+                : <p className="text-base sm:text-lg" style={{ color: ORANGE }}>Genau. Nicht raten, sondern wissen.</p>
               }
               {allWrong && !bbaChosen && <div className="absolute top-3 right-3 w-2 h-2 rounded-full animate-pulse" style={{ background: ORANGE }} />}
             </button>
@@ -286,7 +284,7 @@ function Fallstudie() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6" style={SG}>
             Gleiche Leute.<br />Bessere Methoden.
           </h2>
-          <p className="text-lg text-neutral-500 max-w-2xl mb-16">
+          <p className="text-lg sm:text-xl text-neutral-400 max-w-2xl mb-16">
             Zwei Teams, gleiches Produkt, gleiches Budget. Eines verlässt sich auf Intuition. Das andere auf Daten.
           </p>
         </Reveal>
@@ -305,7 +303,7 @@ function Fallstudie() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
           <Reveal>
             <div className="transition-all duration-500">
-              <p className="text-xs font-medium tracking-[0.15em] uppercase text-neutral-600 mb-8">Vorgehen</p>
+              <p className="text-sm font-medium tracking-[0.15em] uppercase text-neutral-400 mb-8">Vorgehen</p>
               {!showData ? (
                 <div className="space-y-6">
                   {[
@@ -316,7 +314,7 @@ function Fallstudie() {
                   ].map(([t, d], i) => (
                     <div key={i}>
                       <p className="text-white font-medium mb-1">{t}</p>
-                      <p className="text-neutral-500 text-sm">{d}</p>
+                      <p className="text-neutral-400 text-base">{d}</p>
                     </div>
                   ))}
                 </div>
@@ -332,9 +330,9 @@ function Fallstudie() {
                     ['Datenschutz', 'Kundendaten DSGVO-konform erhoben.', 'Recht'],
                   ].map(([t, d, m], i) => (
                     <div key={i}>
-                      <p className="text-white font-medium mb-1">{t}</p>
-                      <p className="text-neutral-500 text-sm">{d}</p>
-                      <p className="text-neutral-700 text-xs mt-0.5">{m}</p>
+                      <p className="text-white font-medium text-lg mb-1">{t}</p>
+                      <p className="text-neutral-400 text-base">{d}</p>
+                      <p className="text-neutral-500 text-sm mt-0.5">{m}</p>
                     </div>
                   ))}
                 </div>
@@ -344,20 +342,20 @@ function Fallstudie() {
 
           <Reveal delay="stagger-2">
             <div className="transition-all duration-500">
-              <p className="text-xs font-medium tracking-[0.15em] uppercase text-neutral-600 mb-8">Ergebnis nach 6 Monaten</p>
+              <p className="text-sm font-medium tracking-[0.15em] uppercase text-neutral-400 mb-8">Ergebnis nach 6 Monaten</p>
               {!showData ? (
                 <div>
                   <p className="text-[clamp(4rem,10vw,8rem)] font-bold leading-none text-red-500/60 mb-4" style={SG}>40%</p>
-                  <p className="text-lg text-neutral-500 mb-8">der Ware bleibt im Regal.</p>
-                  <p className="text-sm text-neutral-600">Im Winter will niemand Eistee. Budget verbrannt.</p>
-                  <p className="text-sm text-neutral-700 mt-2">Das Produkt war gut. Die Entscheidungen nicht.</p>
+                  <p className="text-lg sm:text-xl text-neutral-400 mb-8">der Ware bleibt im Regal.</p>
+                  <p className="text-base text-neutral-400">Im Winter will niemand Eistee. Budget verbrannt.</p>
+                  <p className="text-base text-neutral-500 mt-2">Das Produkt war gut. Die Entscheidungen nicht.</p>
                 </div>
               ) : (
                 <div>
                   <p className="text-[clamp(4rem,10vw,8rem)] font-bold leading-none mb-4" style={{ ...SG, color: '#34d399' }}>92%</p>
-                  <p className="text-lg text-neutral-500 mb-8">Abverkauf. Nachbestellungen ab Woche 3.</p>
-                  <p className="text-sm text-neutral-600">Daten haben gezeigt, was funktioniert.</p>
-                  <p className="text-sm text-neutral-700 mt-2">Gleiche Leute. Bessere Methoden.</p>
+                  <p className="text-lg sm:text-xl text-neutral-400 mb-8">Abverkauf. Nachbestellungen ab Woche 3.</p>
+                  <p className="text-base text-neutral-400">Daten haben gezeigt, was funktioniert.</p>
+                  <p className="text-base text-neutral-500 mt-2">Gleiche Leute. Bessere Methoden.</p>
                 </div>
               )}
             </div>
@@ -388,9 +386,9 @@ function Fallstudie() {
                   ['Konjunkturanalyse', 'Makroökonomik', 'Sem. 2'],
                 ].map(([s, modul, sem], i) => (
                   <div key={i}>
-                    <p style={{ color: ORANGE }} className="text-sm font-medium">{s}</p>
-                    <p className="text-neutral-500 text-xs">{modul}</p>
-                    <p className="text-neutral-700 text-xs">{sem}</p>
+                    <p style={{ color: ORANGE }} className="text-base font-medium">{s}</p>
+                    <p className="text-neutral-400 text-sm">{modul}</p>
+                    <p className="text-neutral-500 text-sm">{sem}</p>
                   </div>
                 ))}
               </div>
@@ -416,8 +414,8 @@ function DemingQuote() {
                 <img src={import.meta.env.BASE_URL + 'deming.jpg'} alt="W. Edwards Deming" className="w-full h-full object-cover" loading="lazy" />
               </div>
             </div>
-            <div className="text-center sm:text-left">
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug tracking-tight mb-4" style={{ ...SG, color: INK }}>
+            <div className="text-center sm:text-left flex-1 min-w-0">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug tracking-tight mb-4 whitespace-nowrap" style={{ ...SG, color: INK }}>
                 &ldquo;In God we trust; all others must bring data.&rdquo;
               </p>
               <p className="text-neutral-400 text-sm">
@@ -612,7 +610,7 @@ function SemesterFahrplan() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4" style={{ ...SG, color: INK }}>
             7 Semester. Dein Weg.
           </h2>
-          <p className="text-lg text-neutral-400 max-w-2xl mb-20">
+          <p className="text-lg sm:text-xl text-neutral-500 max-w-2xl mb-20">
             Vom ersten Datensatz bis zur eigenen Bachelorarbeit — jedes Semester baut auf dem vorherigen auf.
           </p>
         </Reveal>
@@ -636,12 +634,12 @@ function SemesterFahrplan() {
 
                   <div className="pt-1">
                     <h3 className="text-2xl sm:text-3xl font-bold mb-2" style={{ ...SG, color: INK }}>{sem.title}</h3>
-                    <p className="text-neutral-400 mb-6 text-sm">{sem.skill}</p>
+                    <p className="text-neutral-500 mb-6 text-base">{sem.skill}</p>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2.5">
                       {sem.items.map(([label, cat], j) => (
-                        <span key={j} className="text-xs sm:text-sm px-2.5 py-1 rounded-full font-medium"
-                          style={{ color: catCol[cat], background: catCol[cat] + '12', border: `1px solid ${catCol[cat]}30` }}
+                        <span key={j} className="text-sm sm:text-base px-3 py-1.5 rounded-full font-medium"
+                          style={{ color: catCol[cat], background: catCol[cat] + '18', border: `1.5px solid ${catCol[cat]}40` }}
                         >{label}</span>
                       ))}
                     </div>
@@ -706,7 +704,7 @@ function Berufswelt() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4" style={{ ...SG, color: INK }}>
             Was du damit<br />machen kannst.
           </h2>
-          <p className="text-lg text-neutral-400 max-w-2xl mb-16">
+          <p className="text-lg sm:text-xl text-neutral-500 max-w-2xl mb-16">
             Mit einem BBA-Abschluss bist du nicht auf einen Job festgelegt.
           </p>
         </Reveal>
@@ -727,9 +725,9 @@ function Berufswelt() {
             {profiles.map((p, i) => (
               <Reveal key={i} delay={i < 6 ? `stagger-${Math.min(i + 1, 4)}` : ''}>
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase text-neutral-500 mb-2">{p.ctx}</p>
-                  <h3 className="text-xl font-bold mb-2" style={{ ...SG, color: INK }}>{p.title}</h3>
-                  <p className="text-sm text-neutral-500 leading-relaxed">{p.desc}</p>
+                  <p className="text-sm tracking-[0.15em] uppercase text-neutral-500 mb-2">{p.ctx}</p>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ ...SG, color: INK }}>{p.title}</h3>
+                  <p className="text-base text-neutral-500 leading-relaxed">{p.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -738,15 +736,15 @@ function Berufswelt() {
 
         {view === 'stellen' && (
           <div>
-            <p className="text-xs text-neutral-300 mb-8">Beispielhafte Profile nach Vorbild realer Ausschreibungen</p>
+            <p className="text-sm text-neutral-400 mb-8">Beispielhafte Profile nach Vorbild realer Ausschreibungen</p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {stellen.map((s, i) => (
                 <Reveal key={i} delay={i < 6 ? `stagger-${Math.min(i + 1, 4)}` : ''}>
                   <a href={s.link} target="_blank" rel="noopener noreferrer" className="block group">
-                    <p className="font-bold mb-0.5 group-hover:underline" style={{ ...SG, color: INK }}>{s.firma}</p>
-                    <p className="text-sm mb-1" style={{ color: ORANGE }}>{s.titel}</p>
-                    <p className="text-xs text-neutral-400 mb-3">{s.ort} · {s.gehalt}</p>
-                    <div className="flex gap-2">{s.tags.map((t, j) => <span key={j} className="text-xs text-neutral-400 bg-neutral-50 px-2 py-0.5">{t}</span>)}</div>
+                    <p className="text-lg font-bold mb-0.5 group-hover:underline" style={{ ...SG, color: INK }}>{s.firma}</p>
+                    <p className="text-base mb-1" style={{ color: ORANGE }}>{s.titel}</p>
+                    <p className="text-sm text-neutral-500 mb-3">{s.ort} · {s.gehalt}</p>
+                    <div className="flex gap-2">{s.tags.map((t, j) => <span key={j} className="text-sm text-neutral-500 bg-neutral-100 px-2.5 py-0.5">{t}</span>)}</div>
                   </a>
                 </Reveal>
               ))}
@@ -758,7 +756,7 @@ function Berufswelt() {
           <div className="max-w-3xl space-y-12">
             <Reveal>
               <h3 className="text-2xl font-bold mb-3" style={{ ...SG, color: INK }}>KI verändert den Arbeitsmarkt. Aber nicht so, wie viele denken.</h3>
-              <p className="text-neutral-500">Automatisiert werden repetitive Aufgaben. Was bleibt: die richtigen Fragen stellen, Ergebnisse einordnen, Entscheidungen treffen. Genau das lernt man im BBA.</p>
+              <p className="text-base sm:text-lg text-neutral-500">Automatisiert werden repetitive Aufgaben. Was bleibt: die richtigen Fragen stellen, Ergebnisse einordnen, Entscheidungen treffen. Genau das lernt man im BBA.</p>
             </Reveal>
             <Reveal>
               <div className="grid sm:grid-cols-3 gap-8 py-8">
@@ -769,11 +767,11 @@ function Berufswelt() {
                 ].map(([v, l], i) => (
                   <div key={i}>
                     <p className="text-3xl sm:text-4xl font-bold mb-1" style={{ ...SG, color: INK }}>{v}</p>
-                    <p className="text-sm text-neutral-400">{l}</p>
+                    <p className="text-base text-neutral-500">{l}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-neutral-300">Quellen: Grand View Research, IMARC Group (2024/25)</p>
+              <p className="text-sm text-neutral-400">Quellen: Grand View Research, IMARC Group (2024/25)</p>
             </Reveal>
           </div>
         )}
@@ -800,7 +798,7 @@ function PasstDu() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4" style={{ ...SG, color: INK }}>
             Passt du zu BBA?
           </h2>
-          <p className="text-lg text-neutral-400 max-w-xl mb-20">
+          <p className="text-lg sm:text-xl text-neutral-500 max-w-xl mb-20">
             Du brauchst kein Mathe-Ass zu sein und keine Programmiersprache zu kennen.
           </p>
         </Reveal>
@@ -858,7 +856,7 @@ function Vorteile() {
             <Reveal key={i} delay={i < 6 ? `stagger-${Math.min(i + 1, 4)}` : ''}>
               <div>
                 <p className="text-3xl sm:text-4xl font-bold mb-2" style={{ ...SG, color: INK }}>{v}</p>
-                <p className="text-neutral-400">{l}</p>
+                <p className="text-base text-neutral-500">{l}</p>
               </div>
             </Reveal>
           ))}
@@ -869,7 +867,7 @@ function Vorteile() {
           <div className="mt-24 pt-12 border-t border-neutral-100">
             <div className="flex flex-wrap items-end gap-8 mb-10">
               <div>
-                <p className="text-xs tracking-[0.15em] uppercase text-neutral-300 mb-2">StudyCheck.de</p>
+                <p className="text-sm tracking-[0.15em] uppercase text-neutral-400 mb-2">StudyCheck.de</p>
                 <p className="text-5xl sm:text-6xl font-bold" style={{ ...SG, color: INK }}>4.0<span className="text-neutral-300 text-2xl"> / 5</span></p>
               </div>
               <div>
@@ -885,8 +883,8 @@ function Vorteile() {
                 <div key={i} className="flex items-center gap-3">
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
-                      <span className="text-xs text-neutral-400">{label as string}</span>
-                      <span className="text-xs font-bold" style={{ ...SG, color: INK }}>{val as number}</span>
+                      <span className="text-sm text-neutral-500">{label as string}</span>
+                      <span className="text-sm font-bold" style={{ ...SG, color: INK }}>{val as number}</span>
                     </div>
                     <div className="h-1 bg-neutral-100 overflow-hidden">
                       <div className="h-full transition-all duration-1000" style={{ width: `${((val as number) / 5) * 100}%`, background: ORANGE }} />
@@ -895,7 +893,7 @@ function Vorteile() {
                 </div>
               ))}
             </div>
-            <p className="mt-6 text-xs text-neutral-300">
+            <p className="mt-6 text-sm text-neutral-400">
               <a href="https://www.studycheck.de/studium/business-information-management/thws-27180/bewertungen" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: ORANGE }}>studycheck.de</a> · Stand 2025
             </p>
           </div>
@@ -939,8 +937,8 @@ function Wuerzburg() {
                 ['Sonnenstunden/Jahr', '1.650+'],
               ].map(([l, v], i) => (
                 <div key={i} className="flex justify-between items-baseline gap-4 pb-3 border-b border-neutral-200">
-                  <span className="text-xs sm:text-sm text-neutral-400 shrink-0">{l}</span>
-                  <span className="text-sm sm:text-base font-bold text-right" style={{ ...SG, color: INK }}>{v}</span>
+                  <span className="text-sm sm:text-base text-neutral-500 shrink-0">{l}</span>
+                  <span className="text-base sm:text-lg font-bold text-right" style={{ ...SG, color: INK }}>{v}</span>
                 </div>
               ))}
             </div>
@@ -961,7 +959,7 @@ function CTA() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ ...SG, color: INK }}>
             Klingt nach dir?
           </h2>
-          <p className="text-lg text-neutral-400 mb-16">
+          <p className="text-lg sm:text-xl text-neutral-500 mb-16">
             Bewerbungszeitraum: 1. Mai bis 15. Juli. Zulassungsfrei — kein NC.
           </p>
         </Reveal>
@@ -970,7 +968,7 @@ function CTA() {
           <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 mb-14 text-left">
             {[['Abschluss', 'B.Sc.'], ['Dauer', '7 Semester'], ['Start', 'Immer im Oktober']].map(([l, v], i) => (
               <div key={i}>
-                <p className="text-xs text-neutral-300 uppercase tracking-[0.15em] mb-0.5">{l}</p>
+                <p className="text-sm text-neutral-400 uppercase tracking-[0.15em] mb-0.5">{l}</p>
                 <p className="font-bold" style={{ ...SG, color: INK }}>{v}</p>
               </div>
             ))}
@@ -986,7 +984,7 @@ function CTA() {
           >
             Jetzt bewerben
           </a>
-          <p className="mt-6 text-sm text-neutral-300">
+          <p className="mt-6 text-base text-neutral-400">
             Fragen? <a href="mailto:robert.butscher@thws.de" className="hover:underline" style={{ color: ORANGE }}>robert.butscher@thws.de</a>
           </p>
           <p className="mt-4">
@@ -1003,7 +1001,7 @@ function CTA() {
 function Footer() {
   return (
     <footer className="py-10 border-t border-neutral-100">
-      <div className="max-w-5xl mx-auto px-6 flex flex-wrap justify-between items-center gap-4 text-xs text-neutral-300">
+      <div className="max-w-5xl mx-auto px-6 flex flex-wrap justify-between items-center gap-4 text-sm text-neutral-400">
         <div className="flex items-center gap-2">
           <span className="font-bold text-sm" style={{ ...SG, color: ORANGE }}>BBA</span>
           <span>THWS Würzburg</span>
