@@ -670,7 +670,7 @@ function SemesterFahrplan() {
 
 /* ─── BERUFSWELT ─── */
 function Berufswelt() {
-  const [view, setView] = useState<'profile' | 'stellen' | 'ki'>('profile')
+  const [view, setView] = useState<'profile' | 'stellen' | 'master' | 'ki'>('profile')
 
   const profiles = [
     { title: 'Business Analyst', ctx: 'Unternehmensberatung', desc: 'Du analysierst, wie ein Unternehmen arbeitet, findest Schwachstellen und schlägst datenbasierte Verbesserungen vor.' },
@@ -690,9 +690,28 @@ function Berufswelt() {
     { firma: 'Bosch', titel: 'Data Scientist (Junior)', ort: 'Stuttgart', gehalt: '55–65k €', tags: ['Python', 'ML'], link: 'https://www.stepstone.de/jobs/data-scientist' },
   ]
 
+  const masterPaths = [
+    { dir: 'Wirtschaft & Management', color: ORANGE, programs: [
+      { name: 'M.Sc. Business Analytics', uni: 'z.\u202FB. HS Würzburg, TU München', why: 'Direkter Anschluss — vertieft statistische Modelle, Machine Learning und Entscheidungstheorie auf dem BBA-Fundament.' },
+      { name: 'M.Sc. Data Science & Business', uni: 'z.\u202FB. Uni Mannheim, HU Berlin', why: 'Verbindet BWL-Denken mit fortgeschrittener Datenwissenschaft — genau die Schnittstelle, die der BBA legt.' },
+      { name: 'MBA / M.A. Management', uni: 'z.\u202FB. HS Würzburg, ESB Reutlingen', why: 'Wer Führung anstrebt: der BBA liefert die analytische Basis, der MBA den strategischen Überbau.' },
+    ]},
+    { dir: 'Technik & Informatik', color: '#6366f1', programs: [
+      { name: 'M.Sc. Informatik', uni: 'z.\u202FB. Uni Würzburg, TU Darmstadt', why: 'Für alle, die tiefer in Software-Engineering, KI oder verteilte Systeme einsteigen wollen.' },
+      { name: 'M.Sc. Wirtschaftsinformatik', uni: 'z.\u202FB. Uni Bamberg, FAU Erlangen', why: 'Der Klassiker an der Schnittstelle — ergänzt den BBA um IT-Architektur und Prozessdesign.' },
+      { name: 'M.Sc. Applied AI', uni: 'z.\u202FB. HS München, TU Berlin', why: 'Spezialisierung auf künstliche Intelligenz — mit dem BBA bringst du die nötige Daten- und Mathekompetenz mit.' },
+    ]},
+    { dir: 'Ganz andere Richtung', color: '#059669', programs: [
+      { name: 'M.A. Digital Humanities', uni: 'z.\u202FB. Uni Würzburg, Uni Köln', why: 'Datenanalyse trifft Kultur und Sprache — ein spannender Weg für analytisch denkende Geisteswissenschaftler.' },
+      { name: 'M.Sc. Gesundheitsökonomie', uni: 'z.\u202FB. Uni Bayreuth, HS Fulda', why: 'Das Gesundheitswesen braucht dringend datengetriebene Entscheider — der BBA ist die perfekte Basis.' },
+      { name: 'M.Sc. Umwelt- & Nachhaltigkeitsmanagement', uni: 'z.\u202FB. HS Eberswalde, Leuphana', why: 'Nachhaltigkeit quantifizieren und steuern: Carbon Accounting, ESG-Reporting, Impact-Messung — alles Datenarbeit.' },
+    ]},
+  ]
+
   const tabs = [
     { key: 'profile' as const, label: 'Berufsprofile' },
     { key: 'stellen' as const, label: 'Stellenanzeigen' },
+    { key: 'master' as const, label: 'Master & Weiter' },
     { key: 'ki' as const, label: 'Warum jetzt' },
   ]
 
@@ -749,6 +768,46 @@ function Berufswelt() {
                 </Reveal>
               ))}
             </div>
+          </div>
+        )}
+
+        {view === 'master' && (
+          <div className="space-y-14">
+            <Reveal>
+              <p className="text-base sm:text-lg text-neutral-500 max-w-3xl mb-10">
+                Der BBA ist nicht das Ende, sondern ein starkes Fundament. Weil du BWL, Informatik, Statistik und Datenanalyse
+                kombiniert lernst, stehen dir Master-Programme in überraschend vielen Richtungen offen — wirtschaftlich, technisch
+                oder ganz woanders.
+              </p>
+            </Reveal>
+            {masterPaths.map((path, pi) => (
+              <Reveal key={pi} delay={pi < 3 ? `stagger-${pi + 1}` : ''}>
+                <div className="mb-2">
+                  <span className="inline-block text-sm font-semibold tracking-[0.15em] uppercase px-3 py-1 rounded-full mb-6"
+                    style={{ color: path.color, background: path.color + '15', border: `2px solid ${path.color}40` }}
+                  >{path.dir}</span>
+                  <div className="grid sm:grid-cols-3 gap-6">
+                    {path.programs.map((prog, j) => (
+                      <div key={j} className="border-2 border-neutral-200 rounded-2xl p-5 hover:border-neutral-300 transition-colors">
+                        <h4 className="text-lg font-bold mb-1" style={{ ...SG, color: INK }}>{prog.name}</h4>
+                        <p className="text-sm text-neutral-400 mb-3">{prog.uni}</p>
+                        <p className="text-base text-neutral-500 leading-relaxed">{prog.why}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+            <Reveal>
+              <div className="mt-4 p-6 rounded-2xl bg-neutral-50 border-2 border-neutral-200">
+                <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
+                  <strong style={{ ...SG, color: INK }}>Warum steht dir so viel offen?</strong> Im BBA lernst du die Basics,
+                  die in fast jedem Master vorausgesetzt werden: wissenschaftliches Arbeiten, Statistik, Programmieren, wirtschaftliches
+                  Denken. Diese Kombination ist selten — und genau deshalb so wertvoll. Viele spezialisierte Master suchen genau solche
+                  Quereinsteiger mit breitem analytischem Fundament.
+                </p>
+              </div>
+            </Reveal>
           </div>
         )}
 
