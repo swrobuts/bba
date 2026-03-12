@@ -176,7 +176,7 @@ function Hero() {
             <div className="p-4 bg-white">
               <img
                 src={import.meta.env.BASE_URL + 'qr-code.png'}
-                alt="QR-Code" width={200} height={200}
+                alt="QR-Code" width={280} height={280}
               />
             </div>
           </div>
