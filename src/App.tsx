@@ -175,7 +175,7 @@ function Hero() {
           <div className={`hidden lg:flex flex-col items-center gap-4 pt-12 transition-all duration-700 delay-500 ${phase >= 2 ? 'opacity-100' : 'opacity-0'}`}>
             <div className="p-4 bg-white">
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent('https://swrobuts.github.io/bba/')}&color=111111&bgcolor=FFFFFF&margin=0`}
+                src={import.meta.env.BASE_URL + 'qr-code.png'}
                 alt="QR-Code" width={200} height={200}
               />
             </div>
