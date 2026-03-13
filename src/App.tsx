@@ -537,7 +537,7 @@ function WasDuLernst() {
             Fünf Welten. Ein Studium.
           </h2>
           <p className="text-lg text-neutral-400 max-w-2xl mb-12">
-            Business Analytics verbindet BWL, Technologie, Analytik, VWL und überfachliche Kompetenz. Jedes Modul baut auf anderen auf.
+            Business Analytics verbindet BWL, VWL, Analytik, Technologie und überfachliche Kompetenz. Jedes Modul baut auf anderen auf.
           </p>
         </Reveal>
 
@@ -775,7 +775,7 @@ function Berufswelt() {
           <div className="space-y-14">
             <Reveal>
               <p className="text-base sm:text-lg text-neutral-500 max-w-3xl mb-10">
-                Der BBA ist nicht das Ende, sondern ein starkes Fundament. Weil du BWL, Informatik, Statistik und Datenanalyse
+                Der BBA ist nicht das Ende, sondern ein starkes Fundament. Weil du BWL, VWL, Informatik, Statistik und Datenanalyse
                 kombiniert lernst, stehen dir Master-Programme in überraschend vielen Richtungen offen — wirtschaftlich, technisch
                 oder ganz woanders.
               </p>
